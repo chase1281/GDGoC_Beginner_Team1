@@ -1,5 +1,61 @@
 # GDGoC_Beginner_Team1
 
-GDGoC 7기 비기너 최종 프로젝트 1팀의 레포지토리입니다.
+<div align = "center">
 
-GDGoC 스터디 게시판
+![banner](.github\gdgoc.png)
+
+</div>
+
+---
+
+## 배포 주소 | Distribution Address
+
+- [바로 가기](https://)
+
+---
+
+## 프로젝트 소개 | Introducion to the Project
+
+```
+GDGoC 7기 비기너 1팀의 최종 프로젝트 레포지토리입니다.
+GDGoC 스터디 홍보 게시판 입니다.
+```
+> 개발 기간 : 2026.01 ~ 2026.02
+
+---
+
+## 시작 가이드 | Getting start
+
+### 1️⃣ 기술 스택 | Tech Stack
+
+#### Frontend
+<a href = "https://skillicons.dev">
+    <img src = "https://skillicons.dev/icons?i=react,nodejs,html,css,js"/>
+</a>
+
+#### Backend
+<a href = "https://skillicons.dev">
+    <img src = "https://skillicons.dev/icons?i=java,spring"/>
+</a>
+
+### 2️⃣ 환경 설정 | Setup Guide
+
+#### **Frontend**
+> Node.js LTS 버전 설치 ([다운로드](https://nodejs.org/ko/download))
+
+> FE 폴더 이동
+```bash
+cd FE/gdgoc-fe
+```
+
+> 의존성 설치
+```bash
+npm install
+```
+
+> 개발 서버 실행
+```bash
+npm run dev
+```
+
+#### **Backend**
