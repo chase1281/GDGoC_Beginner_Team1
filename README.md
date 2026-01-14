@@ -2,7 +2,7 @@
 
 <div align = "center">
 
-![banner](.github\gdgoc.png)
+![banner](.github/gdgoc.png)
 
 </div>
 
