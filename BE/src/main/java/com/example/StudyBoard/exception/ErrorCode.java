@@ -12,10 +12,8 @@ public enum ErrorCode {
 
     //회원
     DUPLICATED_EMAIL(HttpStatus.BAD_REQUEST, "-100", "이미 가입된 이메일입니다."),
-    DUPLICATED_NAME(HttpStatus.BAD_REQUEST, "-101", "이미 존재하는 닉네임입니다."),
-    INCORRECT_PASSWORD(HttpStatus.BAD_REQUEST, "-102", "비밀번호가 일치하지 않습니다."),
-    NULL_MEMBER(HttpStatus.BAD_REQUEST, "-103", "존재하지 않는 회원입니다."),
-    DELETED_MEMBER(HttpStatus.BAD_REQUEST, "-104", "탈퇴한 회원입니다."),
+    INCORRECT_PASSWORD(HttpStatus.BAD_REQUEST, "-101", "비밀번호가 일치하지 않습니다."),
+    NULL_MEMBER(HttpStatus.BAD_REQUEST, "-102", "존재하지 않는 회원입니다."),
 
     //인증/권한
     UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "-200", "로그인이 필요합니다."),
@@ -30,7 +28,15 @@ public enum ErrorCode {
     DUPLICATED_APPLIED(HttpStatus.BAD_REQUEST, "-400", "이미 신청한 게시글입니다."),
     SELF_APPLICATION(HttpStatus.BAD_REQUEST, "-401", "본인의 게시글에는 신청할 수 없습니다."),
     APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "-402", "신청 내역을 찾을 수 없습니다."),
-    CAPACITY_EXCEEDED(HttpStatus.BAD_REQUEST, "-403", "모집 정원이 초과되었습니다.")
+    CAPACITY_EXCEEDED(HttpStatus.BAD_REQUEST, "-403", "모집 정원이 초과되었습니다."),
+
+    //토큰
+    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "-T1", "올바르지 않은 AccessToken입니다."),
+    EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "-T2", "만료된 AccessToken입니다."),
+    EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "-T3", "만료된 RefreshToken입니다."),
+    NULL_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "-T4", "존재하지 않은 RefreshToken 접근"),
+    NOT_ACCESS_TOKEN_FOR_REISSUE(HttpStatus.BAD_REQUEST, "-T5", "재발급하기에는 유효기간이 남은 AccessToken"),
+    TOKEN_MISSING_AUTHORITY(HttpStatus.BAD_REQUEST, "-T6", "권한 정보가 담겨있지 않은 토큰입니다.")
     ;
 
     private final HttpStatus httpStatus;

@@ -32,16 +32,16 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public MemberInfoResponse loginMember(MemberLoginRequest request){
-        Member member = memberRepository.findByEmail(request.email())
+    @Transactional(readOnly = true)
+    public MemberInfoResponse getMyInfo(Long memberId){
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NULL_MEMBER));
 
-        if(!passwordEncoder.matches(request.password(), member.getPassword())){
-            throw new BusinessException(ErrorCode.INCORRECT_PASSWORD);
-        }
-
-        return new MemberInfoResponse(member.getMemberId(), member.getEmail(), member.getName(), member.getRole());
+        return new MemberInfoResponse(
+                member.getMemberId(),
+                member.getEmail(),
+                member.getName(),
+                member.getRole()
+        );
     }
-
-
 }
