@@ -44,17 +44,17 @@ GDGoC 스터디 홍보 게시판 입니다.
 > Node.js LTS 버전 설치 ([다운로드](https://nodejs.org/ko/download))
 
 > FE 폴더 이동
-```bash
+```powershell
 cd FE
 ```
 
 > 의존성 설치
-```bash
+```powershell
 npm install
 ```
 
 > 개발 서버 실행
-```bash
+```powershell
 npm run dev
 ```
 
