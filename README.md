@@ -44,18 +44,34 @@ GDGoC 스터디 홍보 게시판 입니다.
 > Node.js LTS 버전 설치 ([다운로드](https://nodejs.org/ko/download))
 
 > FE 폴더 이동
-```bash
-cd FE/gdgoc-fe
+```powershell
+cd FE
 ```
 
 > 의존성 설치
-```bash
+```powershell
 npm install
 ```
 
 > 개발 서버 실행
-```bash
+```powershell
 npm run dev
 ```
 
 #### **Backend**
+> Java 17 이상 설치 ([다운로드](https://www.oracle.com/java/technologies/downloads/))
+
+> BE 폴더 이동
+```powershell
+cd BE
+```
+
+> 의존성 및 빌드
+```powershell
+./gradlew build
+```
+
+> 서버 실행
+```powershell
+./gradlew bootRun
+```
