@@ -1,4 +1,4 @@
-package com.example.StudyBoard.dto.request;
+package com.example.StudyBoard.member.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

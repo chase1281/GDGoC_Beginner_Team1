@@ -1,12 +1,12 @@
-package com.example.StudyBoard.service;
+package com.example.StudyBoard.member.service;
 
 import com.example.StudyBoard.constant.Role;
-import com.example.StudyBoard.dto.request.MemberRegisterRequest;
-import com.example.StudyBoard.dto.response.MemberInfoResponse;
-import com.example.StudyBoard.entity.Member;
+import com.example.StudyBoard.member.dto.request.MemberRegisterRequest;
+import com.example.StudyBoard.member.dto.response.MemberInfoResponse;
+import com.example.StudyBoard.member.entity.Member;
 import com.example.StudyBoard.exception.BusinessException;
 import com.example.StudyBoard.exception.ErrorCode;
-import com.example.StudyBoard.repository.MemberRepository;
+import com.example.StudyBoard.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.example.StudyBoard.auth.repository;
 
 import com.example.StudyBoard.auth.entity.RefreshToken;
-import com.example.StudyBoard.entity.Member;
+import com.example.StudyBoard.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

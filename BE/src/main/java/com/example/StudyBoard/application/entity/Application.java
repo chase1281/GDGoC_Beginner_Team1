@@ -1,6 +1,9 @@
-package com.example.StudyBoard.entity;
+package com.example.StudyBoard.application.entity;
 
+import com.example.StudyBoard.board.entity.Board;
 import com.example.StudyBoard.constant.ApplicationStatus;
+import com.example.StudyBoard.entity.BaseEntity;
+import com.example.StudyBoard.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Application extends BaseEntity{
+public class Application extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

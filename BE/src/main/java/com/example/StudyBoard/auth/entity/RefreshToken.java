@@ -1,6 +1,6 @@
 package com.example.StudyBoard.auth.entity;
 
-import com.example.StudyBoard.entity.Member;
+import com.example.StudyBoard.member.entity.Member;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

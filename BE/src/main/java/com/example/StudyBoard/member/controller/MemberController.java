@@ -1,7 +1,7 @@
-package com.example.StudyBoard.controller;
+package com.example.StudyBoard.member.controller;
 
-import com.example.StudyBoard.dto.request.MemberRegisterRequest;
-import com.example.StudyBoard.service.MemberService;
+import com.example.StudyBoard.member.dto.request.MemberRegisterRequest;
+import com.example.StudyBoard.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

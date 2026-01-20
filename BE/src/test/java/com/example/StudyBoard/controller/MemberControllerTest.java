@@ -1,7 +1,7 @@
 package com.example.StudyBoard.controller;
 
 import com.example.StudyBoard.auth.dto.LoginRequest;
-import com.example.StudyBoard.dto.request.MemberRegisterRequest;
+import com.example.StudyBoard.member.dto.request.MemberRegisterRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

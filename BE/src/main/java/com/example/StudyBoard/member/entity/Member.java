@@ -1,6 +1,7 @@
-package com.example.StudyBoard.entity;
+package com.example.StudyBoard.member.entity;
 
 import com.example.StudyBoard.constant.Role;
+import com.example.StudyBoard.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Member extends BaseEntity{
+public class Member extends BaseEntity {
 
     @Id
     @Column(name = "member_id")

@@ -1,8 +1,10 @@
-package com.example.StudyBoard.entity;
+package com.example.StudyBoard.board.entity;
 
 import com.example.StudyBoard.constant.BoardStatus;
+import com.example.StudyBoard.entity.BaseEntity;
 import com.example.StudyBoard.exception.BusinessException;
 import com.example.StudyBoard.exception.ErrorCode;
+import com.example.StudyBoard.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Board extends BaseEntity{
+public class Board extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
