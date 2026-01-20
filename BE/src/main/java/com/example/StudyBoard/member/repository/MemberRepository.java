@@ -1,6 +1,6 @@
-package com.example.StudyBoard.repository;
+package com.example.StudyBoard.member.repository;
 
-import com.example.StudyBoard.entity.Member;
+import com.example.StudyBoard.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

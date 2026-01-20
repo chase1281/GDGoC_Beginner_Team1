@@ -3,10 +3,10 @@ package com.example.StudyBoard.auth.service;
 import com.example.StudyBoard.auth.dto.*;
 import com.example.StudyBoard.auth.entity.RefreshToken;
 import com.example.StudyBoard.auth.repository.TokenRepository;
-import com.example.StudyBoard.entity.Member;
+import com.example.StudyBoard.member.entity.Member;
 import com.example.StudyBoard.exception.BusinessException;
 import com.example.StudyBoard.exception.ErrorCode;
-import com.example.StudyBoard.repository.MemberRepository;
+import com.example.StudyBoard.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,7 +52,7 @@ public class AuthService {
         String accessToken = jwtTokenProvider.generatedAccessToken(new MemberDetailRequest(member.getMemberId(), List.of(member.getRole())));
         String refreshToken = generateRefreshToken(member);
         String role = member.getRole().name();
-        return new LoginSuccessResponse(accessToken, refreshToken, member.getMemberId().toString(), role);
+        return new LoginSuccessResponse(accessToken, refreshToken, member.getMemberId().toString(), member.getName(), role);
     }
 
     private String generateRefreshToken(final Member member){
@@ -85,6 +85,6 @@ public class AuthService {
     public LoginSuccessResponse logout(@Validated final LoginMemberRequest loginMemberRequest){
         Member member = getMemberById(loginMemberRequest.memberId());
         tokenRepository.deleteAllByMember(member);
-        return new LoginSuccessResponse(null, null, null, null);
+        return new LoginSuccessResponse(null, null, null, null, null);
     }
 }

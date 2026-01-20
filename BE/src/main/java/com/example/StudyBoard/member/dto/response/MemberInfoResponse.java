@@ -1,4 +1,4 @@
-package com.example.StudyBoard.dto.response;
+package com.example.StudyBoard.member.dto.response;
 
 import com.example.StudyBoard.constant.Role;
 

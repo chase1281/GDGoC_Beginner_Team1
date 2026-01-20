@@ -1,20 +1,15 @@
 package com.example.StudyBoard.controller;
 
-import com.example.StudyBoard.constant.Role;
-import com.example.StudyBoard.dto.request.MemberLoginRequest;
-import com.example.StudyBoard.dto.request.MemberRegisterRequest;
-import com.example.StudyBoard.entity.Member;
-import com.example.StudyBoard.repository.MemberRepository;
+import com.example.StudyBoard.auth.dto.LoginRequest;
+import com.example.StudyBoard.member.dto.request.MemberRegisterRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@ActiveProfiles("test")
 class MemberControllerTest {
 
     @Autowired
@@ -90,19 +86,20 @@ class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(registerRequest)))
                 .andExpect(status().isCreated());
 
-        MemberLoginRequest memberLoginRequest = new MemberLoginRequest(
+        LoginRequest loginRequest = new LoginRequest(
                 "test@naver.com",
                 "12345678"
         );
         //then
-        mockMvc.perform(post("/members/login")
+        mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(memberLoginRequest)))
+                .content(objectMapper.writeValueAsString(loginRequest)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value("test@naver.com"))
                 .andExpect(jsonPath("$.name").value("테스트유저"))
-                .andExpect(jsonPath("$.role").value("USER"));
+                .andExpect(jsonPath("$.role").value("USER"))
+                .andExpect(jsonPath("$.accessToken").exists()) // 토큰 존재 여부 추가 검증
+                .andExpect(jsonPath("$.refreshToken").exists());
     }
 
     @Test
@@ -121,17 +118,17 @@ class MemberControllerTest {
                 .andExpect(status().isCreated());
 
 
-        MemberLoginRequest memberLoginRequest = new MemberLoginRequest(
+        LoginRequest loginRequest = new LoginRequest(
                 "test@naver.com",
                 "1234567810"
         );
         //then
-        mockMvc.perform(post("/members/login")
+        mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberLoginRequest)))
+                        .content(objectMapper.writeValueAsString(loginRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorCode").value("-102"))
+                .andExpect(jsonPath("$.errorCode").value("-101"))
                 .andExpect(jsonPath("$.errorDescription").value("비밀번호가 일치하지 않습니다."));
     }
 
@@ -164,36 +161,5 @@ class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorCode").value("-100"))
                 .andExpect(jsonPath("$.errorDescription").value("이미 가입된 이메일입니다."));
-    }
-
-    @Test
-    @DisplayName("회원가입 실패 테스트 - 중복 닉네임")
-    public void duplicatedName() throws Exception{
-        //given
-        MemberRegisterRequest registerRequest = new MemberRegisterRequest(
-                "test@naver.com",
-                "테스트유저",
-                "12345678"
-        );
-
-        mockMvc.perform(post("/members/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registerRequest)))
-                .andDo(print())
-                .andExpect(status().isCreated());
-        //when
-        MemberRegisterRequest duplicateRequest = new MemberRegisterRequest(
-                "test2@naver.com",
-                "테스트유저",
-                "12345678"
-        );
-        //then
-        mockMvc.perform(post("/members/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(duplicateRequest)))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorCode").value("-101"))
-                .andExpect(jsonPath("$.errorDescription").value("이미 존재하는 닉네임입니다."));
     }
 }

@@ -7,6 +7,7 @@ import com.example.StudyBoard.auth.dto.RefreshTokenRequest;
 import com.example.StudyBoard.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,8 +36,10 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<LoginSuccessResponse> logout(@AuthenticationPrincipal final Object principal){
-        Long memberId = Long.parseLong(principal.toString());
+    public ResponseEntity<LoginSuccessResponse> logout(@AuthenticationPrincipal final Long memberId){
+        if(memberId == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         LoginSuccessResponse loginSuccessResponse = authService.logout(new LoginMemberRequest(memberId));
         return ResponseEntity.ok(loginSuccessResponse);
     }

@@ -1,9 +1,9 @@
 package com.example.StudyBoard.auth.entity;
 
-import com.example.StudyBoard.entity.Member;
+import com.example.StudyBoard.member.entity.Member;
 import com.example.StudyBoard.exception.BusinessException;
 import com.example.StudyBoard.exception.ErrorCode;
-import com.example.StudyBoard.repository.MemberRepository;
+import com.example.StudyBoard.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
