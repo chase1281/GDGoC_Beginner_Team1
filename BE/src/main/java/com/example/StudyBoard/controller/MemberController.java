@@ -1,8 +1,6 @@
 package com.example.StudyBoard.controller;
 
-import com.example.StudyBoard.dto.request.MemberLoginRequest;
 import com.example.StudyBoard.dto.request.MemberRegisterRequest;
-import com.example.StudyBoard.dto.response.MemberInfoResponse;
 import com.example.StudyBoard.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

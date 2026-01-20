@@ -1,7 +1,6 @@
 package com.example.StudyBoard.service;
 
 import com.example.StudyBoard.constant.Role;
-import com.example.StudyBoard.dto.request.MemberLoginRequest;
 import com.example.StudyBoard.dto.request.MemberRegisterRequest;
 import com.example.StudyBoard.dto.response.MemberInfoResponse;
 import com.example.StudyBoard.entity.Member;
@@ -25,9 +24,6 @@ public class MemberService {
             throw new BusinessException(ErrorCode.DUPLICATED_EMAIL);
         }
 
-        if(memberRepository.existsByName(request.name())) {
-            throw new BusinessException(ErrorCode.DUPLICATED_EMAIL);
-        }
         Member member = new Member(request.email(), request.name(), passwordEncoder.encode(request.password()), Role.USER);
         memberRepository.save(member);
     }

@@ -52,7 +52,7 @@ public class AuthService {
         String accessToken = jwtTokenProvider.generatedAccessToken(new MemberDetailRequest(member.getMemberId(), List.of(member.getRole())));
         String refreshToken = generateRefreshToken(member);
         String role = member.getRole().name();
-        return new LoginSuccessResponse(accessToken, refreshToken, member.getMemberId().toString(), role);
+        return new LoginSuccessResponse(accessToken, refreshToken, member.getMemberId().toString(), member.getName(), role);
     }
 
     private String generateRefreshToken(final Member member){
@@ -85,6 +85,6 @@ public class AuthService {
     public LoginSuccessResponse logout(@Validated final LoginMemberRequest loginMemberRequest){
         Member member = getMemberById(loginMemberRequest.memberId());
         tokenRepository.deleteAllByMember(member);
-        return new LoginSuccessResponse(null, null, null, null);
+        return new LoginSuccessResponse(null, null, null, null, null);
     }
 }
