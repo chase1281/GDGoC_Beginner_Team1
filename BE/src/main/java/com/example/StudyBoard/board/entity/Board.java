@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class Board extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
@@ -42,15 +41,15 @@ public class Board extends BaseEntity {
     @Column(name = "recruitment_end_date", nullable = false)
     private LocalDateTime recruitmentEndDate;
 
-    //최대정원
+//최대정원
     @Column(nullable = false)
     private int capacity;
 
-    //현재 신청 인원
+//현재 신청 인원
     @Column(nullable = false)
     private int currentCount;
 
-    //모집 게시글 생성자
+//모집 게시글 생성자
     public Board(Member member, String title, int capacity, String content, LocalDateTime recruitmentStartDate, LocalDateTime recruitmentEndDate) {
         this.member = member;
         this.title = title;
@@ -62,17 +61,53 @@ public class Board extends BaseEntity {
         this.recruitmentEndDate = recruitmentEndDate;
     }
 
-    //신청인원 처리
-    public void apply() {
-        //게시글 상태 확인
+//신청인원 처리
+    public void apply(LocalDateTime now) {
+        validateRecruitmentAvailable(now);
+
+        this.currentCount++;
+
+        if (this.currentCount >= this.capacity) {
+            this.status = BoardStatus.CLOSED;
+        }
+    }
+
+    private void validateRecruitmentAvailable(LocalDateTime now) {
+
         if (this.status == BoardStatus.CLOSED) {
             throw new BusinessException(ErrorCode.RECRUITMENT_CLOSED);
         }
 
-        //신청인원 초과 여부
+        if (now.isBefore(recruitmentStartDate) || now.isAfter(recruitmentEndDate)) {
+            throw new BusinessException(ErrorCode.RECRUITMENT_PERIOD_INVALID);
+        }
+
         if (this.currentCount >= this.capacity) {
             throw new BusinessException(ErrorCode.CAPACITY_EXCEEDED);
         }
-        this.currentCount++;
+    }
+
+    public static Board create(
+            Member member,
+            String title,
+            int capacity,
+            String content,
+            LocalDateTime start,
+            LocalDateTime end
+
+    ) {
+
+        if (member == null) {
+            throw new BusinessException(ErrorCode.NULL_MEMBER);
+        }
+
+        if (capacity <= 0) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+        }
+
+        if (!start.isBefore(end)) {
+            throw new BusinessException(ErrorCode.INVALID_RECRUITMENT_PERIOD);
+        }
+        return new Board(member, title, capacity, content, start, end);
     }
 }

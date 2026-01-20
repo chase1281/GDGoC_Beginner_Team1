@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -29,5 +31,27 @@ public class Application extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ApplicationStatus status;
+    //
+    @Column(nullable = false)
+    private LocalDateTime appliedAt;
+
+    private Application(Member member, Board board) {
+        this.member = member;
+        this.board = board;
+        this.status = ApplicationStatus.PENDING;
+        this.appliedAt = LocalDateTime.now();
+    }
+
+    public static Application create(Member member, Board board) {
+        return new Application(member, board);
+    }
+
+    public void accept() {
+        this.status = ApplicationStatus.ACCEPTED;
+    }
+
+    public void reject() {
+        this.status = ApplicationStatus.REJECTED;
+    }
 
 }

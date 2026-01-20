@@ -60,7 +60,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/**",
                                 "/members/register",
-                                "/h2-console/**"
+                                "/h2-console/**",
+
+                                "/boards/**" //board 로직 테스트용
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

@@ -23,7 +23,8 @@ public enum ErrorCode {
     //게시글
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "-300", "존재하지 않는 게시글입니다."),
     RECRUITMENT_CLOSED(HttpStatus.BAD_REQUEST, "-301", "모집이 마감된 게시글입니다."),
-
+    RECRUITMENT_PERIOD_INVALID(HttpStatus.BAD_REQUEST, "-302","모집 기간이 아닙니다."),
+    INVALID_RECRUITMENT_PERIOD(HttpStatus.BAD_REQUEST, "-303", "모집 시작일은 종료일보다 이전이어야 합니다."),
     //신청
     DUPLICATED_APPLIED(HttpStatus.BAD_REQUEST, "-400", "이미 신청한 게시글입니다."),
     SELF_APPLICATION(HttpStatus.BAD_REQUEST, "-401", "본인의 게시글에는 신청할 수 없습니다."),
