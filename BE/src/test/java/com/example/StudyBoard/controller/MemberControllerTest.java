@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@ActiveProfiles("test")
 class MemberControllerTest {
 
     @Autowired
@@ -89,14 +91,15 @@ class MemberControllerTest {
                 "12345678"
         );
         //then
-        mockMvc.perform(post("/members/login")
+        mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value("test@naver.com"))
                 .andExpect(jsonPath("$.name").value("테스트유저"))
-                .andExpect(jsonPath("$.role").value("USER"));
+                .andExpect(jsonPath("$.role").value("USER"))
+                .andExpect(jsonPath("$.accessToken").exists()) // 토큰 존재 여부 추가 검증
+                .andExpect(jsonPath("$.refreshToken").exists());
     }
 
     @Test
@@ -120,12 +123,12 @@ class MemberControllerTest {
                 "1234567810"
         );
         //then
-        mockMvc.perform(post("/members/login")
+        mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorCode").value("-102"))
+                .andExpect(jsonPath("$.errorCode").value("-101"))
                 .andExpect(jsonPath("$.errorDescription").value("비밀번호가 일치하지 않습니다."));
     }
 
