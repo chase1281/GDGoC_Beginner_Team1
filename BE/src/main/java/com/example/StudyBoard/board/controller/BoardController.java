@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,18 +25,16 @@ public class BoardController {
     //게시글 생성
     @PostMapping("/create")
     public ResponseEntity<BoardResponse> createBoard(
-            @RequestBody @Valid BoardCreateRequest request
+            @RequestBody @Valid BoardCreateRequest request,
+            Authentication authentication
     ) {
-        Long memberId = 1L; //test용
-
-        BoardResponse response =
-                boardService.create(request, memberId);
-
+        Long memberId = (Long) authentication.getPrincipal();
+        BoardResponse response = boardService.create(request, memberId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     //단건 조회
-    @GetMapping("/{boardId}")
+    @GetMapping("/id/{boardId}")
     public ResponseEntity<BoardResponse> getBoard(@PathVariable Long boardId) {
         return ResponseEntity.ok(boardService.get(boardId));
     }

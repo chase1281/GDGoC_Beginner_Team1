@@ -4,6 +4,7 @@ import com.example.StudyBoard.global.config.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -60,10 +61,10 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/**",
                                 "/members/register",
-                                "/h2-console/**",
-
-                                "/boards/**" //board 로직 테스트용
+                                "/h2-console/**"
                         ).permitAll()
+                        //게시글 조회 비회원도 가능
+                        .requestMatchers(HttpMethod.GET, "/boards/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

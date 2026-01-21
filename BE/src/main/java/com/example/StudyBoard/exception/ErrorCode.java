@@ -30,6 +30,8 @@ public enum ErrorCode {
     SELF_APPLICATION(HttpStatus.BAD_REQUEST, "-401", "본인의 게시글에는 신청할 수 없습니다."),
     APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "-402", "신청 내역을 찾을 수 없습니다."),
     CAPACITY_EXCEEDED(HttpStatus.BAD_REQUEST, "-403", "모집 정원이 초과되었습니다."),
+    CANNOT_CANCEL_APPLICATION(HttpStatus.BAD_REQUEST,"-404","취소할 수 없는 신청입니다."),
+    ALREADY_PROCESSED_APPLICATION(HttpStatus.BAD_REQUEST, "-405", "이미 처리된 신청입니다."),
 
     //토큰
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "-T1", "올바르지 않은 AccessToken입니다."),

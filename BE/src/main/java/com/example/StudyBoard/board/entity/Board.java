@@ -110,4 +110,14 @@ public class Board extends BaseEntity {
         }
         return new Board(member, title, capacity, content, start, end);
     }
+
+    public void release(){
+        if(this.currentCount > 0) {
+            this.currentCount--;
+        }
+
+        if(this.status == BoardStatus.CLOSED && this.currentCount <this.capacity) {
+            this.status = BoardStatus.RECRUITING;
+        }
+    }
 }
