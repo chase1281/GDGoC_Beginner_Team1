@@ -65,7 +65,7 @@ public class ApplicationService {
         }
         //대기중인 신청만 취소 가능
         if(application.getStatus() != ApplicationStatus.PENDING ){
-            throw new BusinessException(ErrorCode. CANNOT_CANCEL_APPLICATION);
+            throw new BusinessException(ErrorCode.CANNOT_CANCEL_APPLICATION);
         }
 
         application.reject();
@@ -108,7 +108,7 @@ public class ApplicationService {
 
         // 이미 처리된 신청은 다시 처리 불가
         if (application.getStatus() != ApplicationStatus.PENDING) {
-            throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+            throw new BusinessException(ErrorCode.ALREADY_PROCESSED_APPLICATION);
         }
 
         application.reject();
