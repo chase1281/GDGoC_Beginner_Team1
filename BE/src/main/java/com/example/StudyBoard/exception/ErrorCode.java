@@ -23,12 +23,15 @@ public enum ErrorCode {
     //게시글
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "-300", "존재하지 않는 게시글입니다."),
     RECRUITMENT_CLOSED(HttpStatus.BAD_REQUEST, "-301", "모집이 마감된 게시글입니다."),
-
+    RECRUITMENT_PERIOD_INVALID(HttpStatus.BAD_REQUEST, "-302","모집 기간이 아닙니다."),
+    INVALID_RECRUITMENT_PERIOD(HttpStatus.BAD_REQUEST, "-303", "모집 시작일은 종료일보다 이전이어야 합니다."),
     //신청
     DUPLICATED_APPLIED(HttpStatus.BAD_REQUEST, "-400", "이미 신청한 게시글입니다."),
     SELF_APPLICATION(HttpStatus.BAD_REQUEST, "-401", "본인의 게시글에는 신청할 수 없습니다."),
     APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "-402", "신청 내역을 찾을 수 없습니다."),
     CAPACITY_EXCEEDED(HttpStatus.BAD_REQUEST, "-403", "모집 정원이 초과되었습니다."),
+    CANNOT_CANCEL_APPLICATION(HttpStatus.BAD_REQUEST,"-404","취소할 수 없는 신청입니다."),
+    ALREADY_PROCESSED_APPLICATION(HttpStatus.BAD_REQUEST, "-405", "이미 처리된 신청입니다."),
 
     //토큰
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "-T1", "올바르지 않은 AccessToken입니다."),
