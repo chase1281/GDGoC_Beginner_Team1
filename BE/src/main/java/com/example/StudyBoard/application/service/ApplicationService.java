@@ -33,7 +33,7 @@ public class ApplicationService {
 
         //회원 조회
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NULL_MEMBER));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
         //본인 글 신청 방지
         if (board.getMember().getMemberId().equals(memberId)) {

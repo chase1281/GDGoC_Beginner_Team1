@@ -22,6 +22,6 @@ public class MemberController {
         memberService.registerMember(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body("회원가입이 성공하였습니다.");
+                .build();
     }
 }
