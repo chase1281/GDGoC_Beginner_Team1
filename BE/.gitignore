@@ -39,3 +39,5 @@ out/
 coverage/
 .env*
 *.log
+
+src/main/resources/application.properties
