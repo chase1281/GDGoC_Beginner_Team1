@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./auth.css";
-
-const API_BASE_URL = "http://localhost:8080";
+import { apiFetch } from "../api";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -25,30 +24,22 @@ function LoginPage() {
     try {
       setLoading(true);
 
-      const res = await fetch(`${API_BASE_URL}/auth/login`, {
+      const data = await apiFetch("/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ loginEmail: email, password }),
       });
 
-      let data = null;
-      let text = "";
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
 
-      const contentType = res.headers.get("content-type") || "";
-      if (contentType.includes("application/json")) {
-        data = await res.json().catch(() => null);
-      } else {
-        text = await res.text().catch(() => "");
-      }
-
-      if (!res.ok) {
-        const msg = (data && data.message) || text || "로그인 실패";
-        throw new Error(msg);
-      }
-
-      if (data) {
-        localStorage.setItem("user", JSON.stringify(data));
-      }
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          memberId: data.memberId,
+          name: data.name,
+          role: data.role,
+        })
+      );
 
       navigate("/");
     } catch (err) {
@@ -57,6 +48,7 @@ function LoginPage() {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="auth-container">
