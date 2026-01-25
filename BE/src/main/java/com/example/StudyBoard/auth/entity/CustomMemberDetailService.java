@@ -19,7 +19,7 @@ public class CustomMemberDetailService {
     @Transactional(readOnly = true)
     public CustomMemberDetails loadMemberByMemberId(final Long memberId){
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NULL_MEMBER));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
         List<SimpleGrantedAuthority> authorities = List.of(
                 new SimpleGrantedAuthority("ROLE_" + member.getRole().name())

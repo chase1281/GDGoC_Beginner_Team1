@@ -1,6 +1,8 @@
 package com.example.StudyBoard.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +42,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(ErrorCode.INVALID_INPUT_VALUE.getHttpStatus())
                 .body(ExceptionResponseBody.of(ErrorCode.INVALID_INPUT_VALUE, errors));
+    }
+
+    //권한 처리
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ExceptionResponseBody> authorizationDeniedExceptionHandler(
+            AuthorizationDeniedException e
+    ){
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ExceptionResponseBody.of(ErrorCode.FORBIDDEN_ACCESS));
     }
 
     //나머지 예외 처리
