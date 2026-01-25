@@ -28,7 +28,7 @@ public class BoardService {
     public BoardResponse create(BoardCreateRequest request, Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NULL_MEMBER));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
         Board board = Board.create(
                 member,

@@ -98,7 +98,7 @@ public class Board extends BaseEntity {
     ) {
 
         if (member == null) {
-            throw new BusinessException(ErrorCode.NULL_MEMBER);
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
         }
 
         if (capacity <= 0) {

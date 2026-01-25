@@ -13,7 +13,8 @@ public enum ErrorCode {
     //회원
     DUPLICATED_EMAIL(HttpStatus.BAD_REQUEST, "-100", "이미 가입된 이메일입니다."),
     INCORRECT_PASSWORD(HttpStatus.BAD_REQUEST, "-101", "비밀번호가 일치하지 않습니다."),
-    NULL_MEMBER(HttpStatus.BAD_REQUEST, "-102", "존재하지 않는 회원입니다."),
+    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "-102", "존재하지 않는 회원입니다."),
+    CANNOT_DELETE_ADMIN(HttpStatus.BAD_REQUEST, "-103", "관리자는 삭제할 수 없습니다."),
 
     //인증/권한
     UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "-200", "로그인이 필요합니다."),

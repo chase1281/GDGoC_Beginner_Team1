@@ -32,13 +32,13 @@ public class AuthService {
 
     private Member getMemberByEmail(final String email) {
         final Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NULL_MEMBER));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         return member;
     }
 
     private Member getMemberById(final Long memberId) {
         final Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NULL_MEMBER));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         return member;
     }
 

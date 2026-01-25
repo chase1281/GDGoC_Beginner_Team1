@@ -24,20 +24,15 @@ public class MemberService {
             throw new BusinessException(ErrorCode.DUPLICATED_EMAIL);
         }
 
-        Member member = new Member(request.email(), request.name(), passwordEncoder.encode(request.password()), Role.USER);
+        Member member = new Member(request.email(), request.name(), passwordEncoder.encode(request.password()));
         memberRepository.save(member);
     }
 
     @Transactional(readOnly = true)
     public MemberInfoResponse getMyInfo(Long memberId){
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NULL_MEMBER));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
-        return new MemberInfoResponse(
-                member.getMemberId(),
-                member.getEmail(),
-                member.getName(),
-                member.getRole()
-        );
+        return MemberInfoResponse.from(member);
     }
 }

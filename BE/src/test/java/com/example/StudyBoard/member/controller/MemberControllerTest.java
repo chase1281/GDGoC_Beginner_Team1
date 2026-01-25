@@ -1,4 +1,4 @@
-package com.example.StudyBoard.controller;
+package com.example.StudyBoard.member.controller;
 
 import com.example.StudyBoard.auth.dto.LoginRequest;
 import com.example.StudyBoard.member.dto.request.MemberRegisterRequest;

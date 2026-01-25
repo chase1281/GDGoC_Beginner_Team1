@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/StudyBoard.iml" filepath="$PROJECT_DIR$/.idea/StudyBoard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.example.StudyBoard.iml" filepath="$PROJECT_DIR$/.idea/modules/com.example.StudyBoard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.example.StudyBoard.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.example.StudyBoard.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.example.StudyBoard.test.iml" filepath="$PROJECT_DIR$/.idea/modules/com.example.StudyBoard.test.iml" />
     </modules>
   </component>
