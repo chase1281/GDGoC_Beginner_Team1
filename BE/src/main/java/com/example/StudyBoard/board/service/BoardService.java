@@ -1,6 +1,7 @@
 package com.example.StudyBoard.board.service;
 
 import com.example.StudyBoard.board.dto.request.BoardCreateRequest;
+import com.example.StudyBoard.board.dto.request.BoardEditRequest;
 import com.example.StudyBoard.board.dto.response.BoardResponse;
 import com.example.StudyBoard.board.entity.Board;
 import com.example.StudyBoard.board.repository.BoardRepository;
@@ -61,5 +62,36 @@ public class BoardService {
     private Board findBoard(Long boardId) {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.BOARD_NOT_FOUND));
+    }
+
+    //게시글 삭제
+    public void delete(Long boardId, Long memberId) {
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(ErrorCode.BOARD_NOT_FOUND));
+
+        //작성자만 삭제 가능
+        if(!board.getMember().getMemberId().equals(memberId)){
+            throw new BusinessException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+
+        boardRepository.delete(board);
+    }
+
+    //게시글 수정
+    public BoardResponse edit(Long boardId, Long memberId, BoardEditRequest request){
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(ErrorCode.BOARD_NOT_FOUND));
+
+        if(!board.getMember().getMemberId().equals(memberId)){
+            throw new BusinessException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+
+        board.update(
+                request.title(),
+                request.content(),
+                request.capacity(),
+                request.recruitmentStartDate(),
+                request.recruitmentEndDate()
+        );
+
+        return BoardResponse.from(board);
     }
 }

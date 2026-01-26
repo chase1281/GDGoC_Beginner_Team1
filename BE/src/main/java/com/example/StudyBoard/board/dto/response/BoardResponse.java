@@ -21,7 +21,7 @@ public class BoardResponse {
 
     //작성자 정보
     private Long memberId;
-    private String name;
+    private String writerName;
 
 
     public static BoardResponse from(Board board){
@@ -36,7 +36,7 @@ public class BoardResponse {
                 .recruitmentEndDate(board.getRecruitmentEndDate())
 
                 .memberId(board.getMember().getMemberId())
-                .name(board.getMember().getName())
+                .writerName(board.getMember().getName())
                 .build();
     }
 }

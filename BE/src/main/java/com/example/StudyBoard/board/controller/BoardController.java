@@ -1,7 +1,9 @@
 package com.example.StudyBoard.board.controller;
 
+import ch.qos.logback.core.model.processor.PhaseIndicator;
 import com.example.StudyBoard.auth.entity.CustomMemberDetails;
 import com.example.StudyBoard.board.dto.request.BoardCreateRequest;
+import com.example.StudyBoard.board.dto.request.BoardEditRequest;
 import com.example.StudyBoard.board.dto.response.BoardResponse;
 import com.example.StudyBoard.board.service.BoardService;
 import com.example.StudyBoard.member.entity.Member;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,5 +46,21 @@ public class BoardController {
     @GetMapping("/recruiting")
     public ResponseEntity<List<BoardResponse>> getRecruitingBoards() {
         return ResponseEntity.ok(boardService.getRecruitingBoards());
+    }
+
+    //삭제
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<String> delete(@PathVariable Long boardId, Authentication authentication) {
+        Long memberId = (Long) authentication.getPrincipal();
+        boardService.delete(boardId, memberId);
+        return ResponseEntity.ok("게시글이 삭제되었습니다.");
+    }
+
+    //수정
+    @PutMapping("/{boardId}")
+    public ResponseEntity<BoardResponse> edit(@PathVariable Long boardId, Authentication authentication, @RequestBody @Valid BoardEditRequest request, BindingResult result) {
+        Long memberId = (Long) authentication.getPrincipal();
+        BoardResponse response = boardService.edit(boardId, memberId, request);
+        return ResponseEntity.ok(response);
     }
 }
