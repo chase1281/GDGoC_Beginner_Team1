@@ -85,11 +85,11 @@ public class BoardService {
         }
 
         board.update(
-                request.title(),
-                request.content(),
-                request.capacity(),
-                request.recruitmentStartDate(),
-                request.recruitmentEndDate()
+                request.getTitle(),
+                request.getContent(),
+                request.getCapacity(),
+                request.getRecruitmentStartDate(),
+                request.getRecruitmentEndDate()
         );
 
         return BoardResponse.from(board);
