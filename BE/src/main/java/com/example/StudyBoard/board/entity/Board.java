@@ -147,5 +147,10 @@ public class Board extends BaseEntity {
         this.capacity = capacity;
         this.recruitmentStartDate = start;
         this.recruitmentEndDate = end;
+
+        //CLOSE->OPEN
+        if (this.status == BoardStatus.CLOSED && this.currentCount < capacity) {
+            this.status = BoardStatus.RECRUITING;
+        }
     }
 }

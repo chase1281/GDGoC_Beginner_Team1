@@ -58,7 +58,7 @@ public class BoardController {
 
     //수정
     @PutMapping("/{boardId}")
-    public ResponseEntity<BoardResponse> edit(@PathVariable Long boardId, Authentication authentication, @RequestBody @Valid BoardEditRequest request, BindingResult result) {
+    public ResponseEntity<BoardResponse> edit(@PathVariable Long boardId, Authentication authentication, @RequestBody @Valid BoardEditRequest request) {
         Long memberId = (Long) authentication.getPrincipal();
         BoardResponse response = boardService.edit(boardId, memberId, request);
         return ResponseEntity.ok(response);
