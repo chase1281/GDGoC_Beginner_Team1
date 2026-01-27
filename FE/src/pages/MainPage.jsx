@@ -146,11 +146,11 @@ function MainPage() {
       try {
         const latest = await apiFetch("/boards/recruiting");
         const mappedLatest = Array.isArray(latest) ? latest.map(mapBoardToStudy) : [];
-        if (mappedLatest && mappedLatest.length > 0) {
-          setStudies(mappedLatest);
-        }
+        // 성공적으로 가져온 경우 서버 상태와 항상 동기화합니다.
+        setStudies(mappedLatest);
       } catch (e) {
-        // 실패 시 로컬 상태를 유지합니다.
+        console.error("Failed to refresh studies after create:", e);
+        // 네트워크 실패 시 추가한 로컬 항목은 유지합니다.
       }
 
       setCreateOpen(false);
@@ -294,7 +294,7 @@ function MainPage() {
                 }}
               >
                 <div style={{ fontWeight: "bold", fontSize: 18, marginBottom: 8 }}>{study.title}</div>
-                <div style={{ color: "#666", fontSize: 14, marginBottom: 6, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{(study.description ?? "").slice(0, 120)}{(study.description ?? "").length > 120 ? "..." : ""}</div>
+                <div style={{ color: "#666", fontSize: 14, marginBottom: 6, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{study.description ?? ""}</div>
                 <div style={{ fontSize: 13, marginBottom: 4 }}><b>리더:</b> {study.leader}</div>
                 <div style={{ fontSize: 13, marginBottom: 4 }}><b>인원:</b> {study.members} / {study.maxMembers}</div>
                 <div style={{ fontSize: 13, marginBottom: 4 }}><b>모집 기간:</b> {study.date}</div>
@@ -452,7 +452,7 @@ function MainPage() {
                   />
                 </div>
 
-                {/* 모짐 종료일 */}
+                {/* 모집 종료일 */}
                 <div style={{ marginBottom: 16 }}>
                   <div style={{ fontSize: 14, fontWeight: "bold", marginBottom: 6 }}>
                     모집 종료일
