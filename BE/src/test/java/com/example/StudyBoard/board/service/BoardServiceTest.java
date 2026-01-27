@@ -42,6 +42,10 @@ class BoardServiceTest {
 
     private Member testMember;
 
+    //고정시간
+    private final LocalDateTime FIXED_START = LocalDateTime.of(2026, 1, 1, 10, 0);
+    private final LocalDateTime FIXED_END = FIXED_START.plusDays(7);
+
     @BeforeEach
     void setUp() {
         //member 생성
@@ -53,20 +57,8 @@ class BoardServiceTest {
         memberRepository.save(testMember);
     }
     //board 생성
-    private BoardCreateRequest createBoardRequest(
-            String title,
-            String content,
-            int capacity,
-            LocalDateTime start,
-            LocalDateTime end
-    ) {
-        BoardCreateRequest request = new BoardCreateRequest();
-        ReflectionTestUtils.setField(request, "title", title);
-        ReflectionTestUtils.setField(request, "content", content);
-        ReflectionTestUtils.setField(request, "capacity", capacity);
-        ReflectionTestUtils.setField(request, "recruitmentStartDate", start);
-        ReflectionTestUtils.setField(request, "recruitmentEndDate", end);
-        return request;
+    private BoardCreateRequest createBoardRequest(String title, String content, int capacity) {
+        return new BoardCreateRequest(title, content, capacity, FIXED_START, FIXED_END);
     }
 
     private BoardEditRequest createEditRequest(
@@ -89,12 +81,8 @@ class BoardServiceTest {
     @Test
     @DisplayName("게시글 생성 태스트")
     void createBoard_success() {
-        // given
-        LocalDateTime start = LocalDateTime.now();
-        LocalDateTime end = start.plusDays(7);
-
         BoardCreateRequest request =
-                createBoardRequest("test board-1", "test -1", 5, start, end);
+                createBoardRequest("test board-1", "test -1", 5);
 
         // when
         BoardResponse response =
@@ -104,8 +92,8 @@ class BoardServiceTest {
         assertThat(response.getTitle()).isEqualTo("test board-1");
         assertThat(response.getContent()).isEqualTo("test -1");
         assertThat(response.getCapacity()).isEqualTo(5);
-        assertThat(response.getRecruitmentStartDate()).isEqualTo(start);
-        assertThat(response.getRecruitmentEndDate()).isEqualTo(end);
+        assertThat(response.getRecruitmentStartDate()).isEqualTo(FIXED_START);
+        assertThat(response.getRecruitmentEndDate()).isEqualTo(FIXED_END);
         assertThat(response.getWriterName()).isEqualTo(testMember.getName());
         assertThat(response.getStatus()).isEqualTo(BoardStatus.RECRUITING);
     }
@@ -119,16 +107,17 @@ class BoardServiceTest {
                 "test board",
                 5,
                 "test content",
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(7)
+                FIXED_START,
+                FIXED_END
         );
         boardRepository.save(board);
 
-        LocalDateTime start = LocalDateTime.now().plusDays(2);
-        LocalDateTime end = LocalDateTime.now().plusDays(14);
+        //수정 시간
+        LocalDateTime newStart = FIXED_START.plusDays(2);
+        LocalDateTime newEnd = FIXED_END.plusDays(5);
 
         BoardEditRequest editRequest =
-                createEditRequest("edit board", "edit content", 10, start, end);
+                createEditRequest("edit board", "edit content", 10, newStart, newEnd);
 
         // when
         BoardResponse response =
@@ -138,8 +127,32 @@ class BoardServiceTest {
         assertThat(response.getTitle()).isEqualTo("edit board");
         assertThat(response.getContent()).isEqualTo("edit content");
         assertThat(response.getCapacity()).isEqualTo(10);
-        assertThat(response.getRecruitmentStartDate()).isEqualTo(start);
-        assertThat(response.getRecruitmentEndDate()).isEqualTo(end);
+        assertThat(response.getRecruitmentStartDate()).isEqualTo(newStart);
+        assertThat(response.getRecruitmentEndDate()).isEqualTo(newEnd);
+    }
+    @Test
+    @DisplayName("게시글 수정 실패 - 참여 인원보다 적은 정원으로 변경 불가")
+    void editBoard_fail_capacityExceeded(){
+        //given
+        Board board = Board.create(
+                testMember,
+                "test board",
+                5,
+                "test content",
+                FIXED_START,
+                FIXED_END
+        );
+        boardRepository.save(board);
+
+        ReflectionTestUtils.setField(board, "currentCount", 4);
+        boardRepository.save(board);
+
+        BoardEditRequest editRequest = createEditRequest("test board", "test content", 3, FIXED_START, FIXED_END);
+
+        //when&then
+        assertThatThrownBy(() -> boardService.edit(board.getBoardId(), testMember.getMemberId(), editRequest))
+                .isInstanceOf(BusinessException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.CAPACITY_EXCEEDED);
     }
 
     @Test
@@ -151,8 +164,8 @@ class BoardServiceTest {
                 "test2 edit board",
                 5,
                 "test2 edit content",
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(7)
+                FIXED_START,
+                FIXED_END
         );
         boardRepository.save(board);
         //test2 member 생성
@@ -165,7 +178,7 @@ class BoardServiceTest {
 
         BoardEditRequest editRequest =
                 createEditRequest("edit title", "edit content", 5,
-                        LocalDateTime.now(), LocalDateTime.now().plusDays(7));
+                        FIXED_START, FIXED_END);
 
         // when & then
         assertThatThrownBy(() ->
@@ -184,8 +197,8 @@ class BoardServiceTest {
                 "delete test board",
                 5,
                 "delete test content",
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(7)
+                FIXED_START,
+                FIXED_END
         );
         boardRepository.save(board);
 
@@ -202,11 +215,11 @@ class BoardServiceTest {
         // given
         Board board1 = Board.create(
                 testMember, "test title 1", 5, "content 1",
-                LocalDateTime.now(), LocalDateTime.now().plusDays(7)
+                FIXED_START, FIXED_END
         );
         Board board2 = Board.create(
                 testMember, "test title 2", 3, "content 2",
-                LocalDateTime.now(), LocalDateTime.now().plusDays(7)
+                FIXED_START, FIXED_END
         );
         boardRepository.saveAll(List.of(board1, board2));
 
@@ -231,8 +244,8 @@ class BoardServiceTest {
                 "test title 1",
                 5,
                 "test content 1",
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(7)
+                FIXED_START,
+                FIXED_END
         );
         boardRepository.save(board);
 
