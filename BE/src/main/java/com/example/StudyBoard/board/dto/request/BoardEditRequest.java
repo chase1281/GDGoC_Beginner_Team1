@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,8 +11,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-public class BoardCreateRequest {
+public class BoardEditRequest { // record -> class로 변경
+
     @NotBlank(message = "제목을 입력해주세요")
     private String title;
 
@@ -27,7 +26,6 @@ public class BoardCreateRequest {
     private LocalDateTime recruitmentStartDate;
 
     @NotNull(message = "모집 종료일을 입력해주세요")
-    @Future(message = "모집 종료일은 현재 시점 이후여야 합니다")
     private LocalDateTime recruitmentEndDate;
 
 }

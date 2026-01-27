@@ -1,5 +1,6 @@
 package com.example.StudyBoard.board.entity;
 
+import com.example.StudyBoard.application.entity.Application;
 import com.example.StudyBoard.constant.BoardStatus;
 import com.example.StudyBoard.entity.BaseEntity;
 import com.example.StudyBoard.exception.BusinessException;
@@ -10,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,6 +43,10 @@ public class Board extends BaseEntity {
 
     @Column(name = "recruitment_end_date", nullable = false)
     private LocalDateTime recruitmentEndDate;
+
+    //board-Application
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Application> applications = new ArrayList<>();
 
 //최대정원
     @Column(nullable = false)
@@ -117,6 +124,32 @@ public class Board extends BaseEntity {
         }
 
         if(this.status == BoardStatus.CLOSED && this.currentCount <this.capacity) {
+            this.status = BoardStatus.RECRUITING;
+        }
+    }
+
+    //게시글 수정
+    public void update(String title, String content, int capacity, LocalDateTime start, LocalDateTime end) {
+        if(capacity <= 0) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+        }
+
+        if(!start.isBefore(end)) {
+            throw new BusinessException(ErrorCode.INVALID_RECRUITMENT_PERIOD);
+        }
+
+        if(this.currentCount > capacity) {
+            throw new BusinessException(ErrorCode.CAPACITY_EXCEEDED);
+        }
+
+        this.title = title;
+        this.content = content;
+        this.capacity = capacity;
+        this.recruitmentStartDate = start;
+        this.recruitmentEndDate = end;
+
+        //CLOSE->OPEN
+        if (this.status == BoardStatus.CLOSED && this.currentCount < capacity) {
             this.status = BoardStatus.RECRUITING;
         }
     }
