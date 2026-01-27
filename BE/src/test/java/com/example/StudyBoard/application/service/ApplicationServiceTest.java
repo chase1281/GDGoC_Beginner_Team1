@@ -11,7 +11,6 @@ import com.example.StudyBoard.member.entity.Member;
 import com.example.StudyBoard.board.repository.BoardRepository;
 import com.example.StudyBoard.constant.Role;
 import com.example.StudyBoard.member.repository.MemberRepository;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,6 +50,14 @@ public class ApplicationServiceTest {
     private final LocalDateTime FIXED_START = LocalDateTime.now().minusDays(1);
     private final LocalDateTime FIXED_END = FIXED_START.plusDays(7);
 
+    //
+    private Application findApplicationByMember(Member member) {
+        return applicationRepository.findAll().stream()
+                .filter(a -> a.getMember().getMemberId().equals(member.getMemberId()))
+                .findFirst()
+                .orElseThrow();
+    }
+
 
     @BeforeEach
     void setup(){
@@ -72,7 +79,7 @@ public class ApplicationServiceTest {
 
     @Test
     @DisplayName("스터디 신청 성공")
-    void aply_success(){
+    void apply_success(){
         //when
         applicationService.apply(testBoard.getBoardId(), applicant.getMemberId());
 
@@ -84,7 +91,7 @@ public class ApplicationServiceTest {
 
     @Test
     @DisplayName("신청 실패 - 본인 게시글에 신청하는경우")
-    void aply_fail_selfApplication(){
+    void apply_fail_selfApplication(){
         //when&then
         assertThatThrownBy(() -> applicationService.apply(testBoard.getBoardId(), writer.getMemberId()))
                 .isInstanceOf(BusinessException.class)
@@ -107,7 +114,8 @@ public class ApplicationServiceTest {
     @DisplayName("신청 취소 성공")
     void cancel_success(){
         applicationService.apply(testBoard.getBoardId(), applicant.getMemberId());
-        Application application = applicationRepository.findAll().get(0);
+        Application application = findApplicationByMember(applicant);
+
 
         applicationService.cancel(application.getApplicationId(), applicant.getMemberId());
 
@@ -119,7 +127,7 @@ public class ApplicationServiceTest {
     @DisplayName("신청 승인 성공")
     void accept_success(){
         applicationService.apply(testBoard.getBoardId(), applicant.getMemberId());
-        Application application = applicationRepository.findAll().get(0);
+        Application application = findApplicationByMember(applicant);
 
         applicationService.accept(application.getApplicationId(), writer.getMemberId());
         assertThat(application.getStatus()).isEqualTo(ApplicationStatus.ACCEPTED);
@@ -130,7 +138,7 @@ public class ApplicationServiceTest {
     @DisplayName("신청 승인 실패 - 신청자 외 시도")
     void accept_fail_notWriter(){
         applicationService.apply(testBoard.getBoardId(), applicant.getMemberId());
-        Application application = applicationRepository.findAll().get(0);
+        Application application = findApplicationByMember(applicant);
 
         assertThatThrownBy(() -> applicationService.accept(application.getApplicationId(), application.getMember().getMemberId()))
                 .isInstanceOf(BusinessException.class)
@@ -141,7 +149,7 @@ public class ApplicationServiceTest {
     @DisplayName("신청 거절 성공")
     void reject_success(){
         applicationService.apply(testBoard.getBoardId(), applicant.getMemberId());
-        Application application = applicationRepository.findAll().get(0);
+        Application application = findApplicationByMember(applicant);
 
         applicationService.reject(application.getApplicationId(), writer.getMemberId());
 
@@ -169,7 +177,7 @@ public class ApplicationServiceTest {
         applicationService.apply(testBoard.getBoardId(), applicant.getMemberId());
         applicationService.apply(testBoard.getBoardId(), applicant2.getMemberId());
 
-        Application application = applicationRepository.findAll().get(0);
+        Application application = findApplicationByMember(applicant);
         assertThat(testBoard.getStatus()).isEqualTo(BoardStatus.CLOSED);
 
         applicationService.cancel(application.getApplicationId(), applicant.getMemberId());
@@ -183,7 +191,7 @@ public class ApplicationServiceTest {
     @DisplayName("이미 승인된 신청 승인 불가")
     void accept_fail_alreadyProcessed(){
         applicationService.apply(testBoard.getBoardId(), applicant.getMemberId());
-        Application application = applicationRepository.findAll().get(0);
+        Application application = findApplicationByMember(applicant);
 
         applicationService.accept(application.getApplicationId(), writer.getMemberId());
 
@@ -198,18 +206,15 @@ public class ApplicationServiceTest {
     @DisplayName("이미 거절된 신청 거절 불가")
     void reject_fail_alreadyProcessed(){
         applicationService.apply(testBoard.getBoardId(), applicant.getMemberId());
-        Application application = applicationRepository.findAll().get(0);
+        Application application = findApplicationByMember(applicant);
 
         applicationService.reject(application.getApplicationId(), writer.getMemberId());
-        
+
         assertThatThrownBy(() ->
                 applicationService.reject(application.getApplicationId(), writer.getMemberId())
         )
                 .isInstanceOf(BusinessException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ALREADY_PROCESSED_APPLICATION);
     }
-
-
-
 
 }
