@@ -16,7 +16,7 @@ function MainPage() {
   });
 
   //화면에 보여줄 모집글 목록 데이터
-  const [studies,setStudies] = useState([]);
+  const [studies, setStudies] = useState([]);
 
   // 페이지 들어올 때 localStorage에서 로그인 정보 가져오기
   useEffect(() => {
@@ -31,20 +31,20 @@ function MainPage() {
     }
   }, []);
 
-  //모집글 목록 불러오기 
+  // 모집글 목록 불러오기 (백엔드 연동 시 사용)
   useEffect(() => {
     const fetchBoards = async () => {
       try {
         const data = await apiFetch("/boards/recruiting");
-        console.log("recruiting data:", data);
-
         const mapped = Array.isArray(data) ? data.map(mapBoardToStudy) : [];
+        // 서버에서 받아온 결과를 반영합니다. 빈 배열이면 화면을 비워둡니다.
         setStudies(mapped);
       } catch (e) {
         console.error("fetchBoards error:", e);
+        // 오류 발생 시 빈 목록을 유지합니다.
+        setStudies([]);
       }
     };
-
     fetchBoards();
   }, []);
 
@@ -70,6 +70,16 @@ function MainPage() {
         : "",
     status: b.status === "RECRUITING" ? "모집중":"모집완료"
   });
+
+
+  // 필터 상태: 전체/모집중/모집완료
+  const [filter, setFilter] = useState("전체");
+
+  // 필터링된 스터디 목록
+  const filteredStudies =
+    filter === "전체"
+      ? studies
+      : studies.filter((s) => s.status === filter);
 
   // 모달 상태: 어떤 스터디를 보여줄지 id로 관리
   const [modalStudyId, setModalStudyId] = useState(null);
@@ -104,7 +114,6 @@ function MainPage() {
     if (form.recruitmentEndDate < form.recruitmentStartDate)
       return alert("모집 종료일은 시작일 이후여야 해요.");
 
-
     try {
       const payload = {
         title: form.title,
@@ -119,8 +128,30 @@ function MainPage() {
         body: JSON.stringify(payload),
       });
 
-      const latest = await apiFetch("/boards/recruiting");
-      setStudies(Array.isArray(latest) ? latest.map(mapBoardToStudy) : []);
+      // 새로 작성한 글을 로컬 상태에 즉시 추가합니다.
+      const tempId = `local-${Date.now()}`;
+      const localStudy = {
+        id: tempId,
+        title: form.title,
+        description: form.description,
+        leader: user?.name ?? "알 수 없음",
+        members: 1,
+        maxMembers: Number(form.maxMembers),
+        date: `${form.recruitmentStartDate} ~ ${form.recruitmentEndDate}`,
+        status: "모집중",
+      };
+      setStudies((prev) => [localStudy, ...(Array.isArray(prev) ? prev : [])]);
+
+      // 서버에서 최신 목록을 받아오면 화면을 갱신합니다. 서버가 빈 배열이면 로컬 상태를 유지합니다.
+      try {
+        const latest = await apiFetch("/boards/recruiting");
+        const mappedLatest = Array.isArray(latest) ? latest.map(mapBoardToStudy) : [];
+        if (mappedLatest && mappedLatest.length > 0) {
+          setStudies(mappedLatest);
+        }
+      } catch (e) {
+        // 실패 시 로컬 상태를 유지합니다.
+      }
 
       setCreateOpen(false);
       setForm({
@@ -135,7 +166,6 @@ function MainPage() {
       alert(e?.message || "모집글 등록 실패");
     }
   };
-
 
   return (
     <div className="main-container" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -171,41 +201,73 @@ function MainPage() {
       <main style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", background: "#fff", paddingTop: 32 }}>
         <section style={{ width: "100%", maxWidth: 900, margin: "0 auto 40px auto", background: "#fff", borderRadius: 8, boxShadow: "0 2px 8px rgba(0,0,0,0.04)", padding: 24 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-          <h3 style={{ margin: 0, fontSize: 22 }}>
-            스터디 모집 게시판
-          </h3>
+            <h3 style={{ margin: 0, fontSize: 22 }}>
+              스터디 모집 게시판
+            </h3>
 
-          <button
-            onClick={() => {
-              if (!user) {
-                alert("로그인 후 작성할 수 있습니다.");
-                navigate("/login");
-                return;
-              }
-              setCreateOpen(true);
-            }}
-            style={{
-              padding: "10px 16px",
-              background: "#1976d2",
-              color: "#fff",
-              border: "none",
-              borderRadius: 8,
-              cursor: "pointer",
-              fontWeight: "bold",
-            }}
-          >
-            모집글 작성
-          </button>
-        </div>
-          
+            <button
+              onClick={() => {
+                if (!user) {
+                  alert("로그인 후 작성할 수 있습니다.");
+                  navigate("/login");
+                  return;
+                }
+                setCreateOpen(true);
+              }}
+              style={{
+                padding: "10px 16px",
+                background: "#1976d2",
+                color: "#fff",
+                border: "none",
+                borderRadius: 8,
+                cursor: "pointer",
+                fontWeight: "bold",
+              }}
+            >
+              모집글 작성
+            </button>
+          </div>
+
+          {/* 필터 탭 */}
+          <div style={{ display: "flex", gap: 0, marginBottom: 24, borderBottom: "2px solid #e3e7ed", width: 360 }}>
+            {["전체", "모집중", "모집완료"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setFilter(tab)}
+                style={{
+                  flex: 1,
+                  padding: "10px 0",
+                  background: filter === tab ? "#fff" : "#f4f6fa",
+                  border: "none",
+                  borderBottom: filter === tab ? "2.5px solid #1976d2" : "2.5px solid transparent",
+                  color: filter === tab ? "#1976d2" : "#888",
+                  fontWeight: filter === tab ? "bold" : "normal",
+                  fontSize: 16,
+                  cursor: "pointer",
+                  outline: "none",
+                  transition: "all 0.15s",
+                }}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
           {/* 스터디 카드 목록 */}
-          <div style={{ display: "flex", gap: 24, justifyContent: "center",flexWrap:"wrap" }}>
-        
-            {studies.length === 0? (
-              <div style={{textAlign:"center", color:"#888", padding:20}}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 24, justifyContent: "center", width: "100%" }}>
+            {filteredStudies.length === 0 ? (
+              <div style={{
+                gridColumn: "1 / -1",
+                minHeight: 180,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#888",
+                fontSize: 16,
+              }}>
                 아직 모집글이 없습니다
-              </div>  
-            ): studies.map(study => (
+              </div>
+            ) : filteredStudies.map((study) => (
               <div
                 key={study.id}
                 style={{
@@ -213,25 +275,26 @@ function MainPage() {
                   borderRadius: 10,
                   boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
                   padding: 24,
-                  minWidth: 260,
+                  height: 220,
+                  boxSizing: "border-box",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
                   cursor: "pointer",
                   transition: "box-shadow 0.2s",
-                  border: "2px solid #e3e7ed"
+                  border: "2px solid #e3e7ed",
                 }}
-
                 onClick={() => {
                   if (!user) {
                     alert("상세보기 및 가입은 로그인 후 가능합니다.");
                     navigate("/login");
-                  }
-                  
-                  else {
+                  } else {
                     setModalStudyId(study.id);
                   }
                 }}
               >
                 <div style={{ fontWeight: "bold", fontSize: 18, marginBottom: 8 }}>{study.title}</div>
-                <div style={{ color: "#666", fontSize: 14, marginBottom: 6 }}>{(study.description ?? "").slice(0, 40)}...</div>
+                <div style={{ color: "#666", fontSize: 14, marginBottom: 6, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{(study.description ?? "").slice(0, 120)}{(study.description ?? "").length > 120 ? "..." : ""}</div>
                 <div style={{ fontSize: 13, marginBottom: 4 }}><b>리더:</b> {study.leader}</div>
                 <div style={{ fontSize: 13, marginBottom: 4 }}><b>인원:</b> {study.members} / {study.maxMembers}</div>
                 <div style={{ fontSize: 13, marginBottom: 4 }}><b>모집 기간:</b> {study.date}</div>
