@@ -1,19 +1,14 @@
 package com.example.StudyBoard.board.controller;
 
-import ch.qos.logback.core.model.processor.PhaseIndicator;
-import com.example.StudyBoard.auth.entity.CustomMemberDetails;
 import com.example.StudyBoard.board.dto.request.BoardCreateRequest;
 import com.example.StudyBoard.board.dto.request.BoardEditRequest;
 import com.example.StudyBoard.board.dto.response.BoardResponse;
 import com.example.StudyBoard.board.service.BoardService;
-import com.example.StudyBoard.member.entity.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -1,6 +1,5 @@
 package com.example.StudyBoard.member.service;
 
-import com.example.StudyBoard.constant.Role;
 import com.example.StudyBoard.member.dto.request.MemberRegisterRequest;
 import com.example.StudyBoard.member.dto.response.MemberInfoResponse;
 import com.example.StudyBoard.member.entity.Member;
