@@ -1,0 +1,46 @@
+[
+  {
+    "boardId": 1,
+    "title": "Spring Boot 스터디",
+    "content": "Spring Boot를 처음 배우는 분들을 위한 스터디입니다. 매주 실습과 과제를 통해 백엔드 개발 역량을 키워보세요. 실습 위주로 진행하며, 스터디원들과 코드 리뷰도 함께 합니다.",
+    "status": "RECRUITING",
+    "leader": "김민제",
+    "currentCount": 5,
+    "capacity": 8,
+    "recruitmentStartDate": "2026-01-20",
+    "recruitmentEndDate": "2026-03-10"
+  },
+  {
+    "boardId": 2,
+    "title": "React 스터디",
+    "content": "React로 실제 웹 서비스를 만들어보는 스터디입니다. 프론트엔드 실무 경험을 쌓고 싶은 분 환영! 프로젝트 기반으로 진행하며, Git/GitHub 협업도 경험할 수 있습니다.",
+    "status": "RECRUITING",
+    "leader": "김민서",
+    "currentCount": 4,
+    "capacity": 7,
+    "recruitmentStartDate": "2026-02-01",
+    "recruitmentEndDate": "2026-03-25"
+  },
+  {
+    "boardId": 3,
+    "title": "알고리즘/코딩테스트 스터디",
+    "content": "매주 다양한 알고리즘 문제를 풀고 풀이를 공유합니다. 초보자도 환영하며, 매주 온라인/오프라인으로 모여 실전 코딩테스트 대비를 합니다.",
+    "status": "CLOSED",
+    "leader": "고예진",
+    "currentCount": 8,
+    "capacity": 8,
+    "recruitmentStartDate": "2026-01-10",
+    "recruitmentEndDate": "2026-02-28"
+  },
+  {
+    "boardId": 4,
+    "title": "CS 면접 대비 스터디",
+    "content": "컴퓨터공학 기본기(운영체제, 네트워크, 자료구조 등)를 다지는 스터디입니다. 매주 발표와 질의응답을 통해 면접 실전 감각을 키웁니다.",
+    "status": "CLOSED",
+    "leader": "김민지",
+    "currentCount": 6,
+    "capacity": 6,
+    "recruitmentStartDate": "2026-01-05",
+    "recruitmentEndDate": "2026-02-15"
+  }
+]
