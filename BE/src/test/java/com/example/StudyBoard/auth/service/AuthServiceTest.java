@@ -71,6 +71,6 @@ public class AuthServiceTest {
         LoginSuccessResponse login = authService.login(new LoginRequest("test@naver.com", "12345678"));
         authService.logout(new LoginMemberRequest(Long.valueOf(login.memberId())));
         //then
-        assertThat(tokenRepository.findAll().isEmpty());
+        assertThat(tokenRepository.findAll().isEmpty()).isTrue();
     }
 }

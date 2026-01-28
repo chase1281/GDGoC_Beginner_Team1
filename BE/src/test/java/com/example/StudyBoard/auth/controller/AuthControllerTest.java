@@ -58,11 +58,21 @@ public class AuthControllerTest {
     @DisplayName("로그인 실패 테스트 - 비밀번호 불일치")
     public void failedLogin() throws Exception{
         //given
+        MemberRegisterRequest registerRequest = new MemberRegisterRequest(
+                "test@naver.com",
+                "테스트유저",
+                "12345678"
+        );
+        mockMvc.perform(post("/members/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(registerRequest)))
+                .andExpect(status().isCreated());
+
+        //when
         LoginRequest loginRequest = new LoginRequest(
                 "test@naver.com",
                 "1234567810"
         );
-        //when
 
         //then
         mockMvc.perform(post("/auth/login")
