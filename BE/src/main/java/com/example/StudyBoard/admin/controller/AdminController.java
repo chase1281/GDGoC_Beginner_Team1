@@ -1,6 +1,5 @@
 package com.example.StudyBoard.admin.controller;
 
-
 import com.example.StudyBoard.admin.service.AdminBoardService;
 import com.example.StudyBoard.admin.service.AdminMemberService;
 import lombok.RequiredArgsConstructor;

@@ -1,12 +1,9 @@
 package com.example.StudyBoard.application.controller;
 
-import com.example.StudyBoard.application.dto.response.ApplicationResponse;
 import com.example.StudyBoard.application.service.ApplicationService;
-import com.example.StudyBoard.auth.entity.CustomMemberDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
