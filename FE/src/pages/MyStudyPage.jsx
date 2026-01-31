@@ -35,7 +35,7 @@ const MyStudyPage = () => {
   }, []);
 
   return (
-    <div style={{ padding: 32 }}>
+    <div className="mystudy-container">
       <h2>내 스터디</h2>
       {loading ? (
         <p>불러오는 중...</p>

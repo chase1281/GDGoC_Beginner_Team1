@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { apiFetch } from "../api";
+import "./MainPage.css";
 
 function MainPage() {
   const navigate = useNavigate();
@@ -185,42 +186,36 @@ function MainPage() {
   };
 
   return (
-    <div className="main-container" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 40px", borderBottom: "1px solid #eee", background: "#f8f9fa" }}>
-        <div style={{ fontWeight: "bold", fontSize: 22 }}>
-          GDGoC 스터디 게시판
-        </div>
+    <div className="main-container">
+      <header className="main-header">
+        <div className="brand">GDGoC 스터디 게시판</div>
 
-        <nav style={{ display: "flex", gap: 24 }}>
+        <nav className="main-nav">
           <Link to="/">홈</Link>
           <Link to="/my">내 스터디</Link>
         </nav>
 
-        <div style={{ display: "flex", gap: 10 }}>
+        <div className="user-actions">
           {user ? (
             <>
-              <span style={{ fontWeight: "bold" }}>{user.name}님</span>
-              <button onClick={handleLogout} style={{ padding: "8px 16px" }}>로그아웃</button>
+              <span className="user-name">{user.name}님</span>
+              <button onClick={handleLogout} className="btn">로그아웃</button>
             </>
           ) : (
             <>
-              <button onClick={() => navigate("/login")} style={{ padding: "8px 16px" }}>로그인</button>
-              <button onClick={() => navigate("/register")} style={{ padding: "8px 16px" }}>회원가입</button>
+              <button onClick={() => navigate("/login")} className="btn">로그인</button>
+              <button onClick={() => navigate("/register")} className="btn">회원가입</button>
             </>
           )}
         </div>
       </header>
 
-      <div style={{ width: "100%", background: "#e9ecef", padding: "12px 0", textAlign: "center", fontSize: 16, color: "#555" }}>
-        GDGoC 스터디 모집글을 확인하고, 원하는 스터디에 지원하세요!
-      </div>
+      <div className="banner">GDGoC 스터디 모집글을 확인하고, 원하는 스터디에 지원하세요!</div>
 
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", background: "#fff", paddingTop: 32 }}>
-        <section style={{ width: "100%", maxWidth: 900, margin: "0 auto 40px auto", background: "#fff", borderRadius: 8, boxShadow: "0 2px 8px rgba(0,0,0,0.04)", padding: 24 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-            <h3 style={{ margin: 0, fontSize: 22 }}>
-              스터디 모집 게시판
-            </h3>
+      <main className="main-content">
+        <section className="board-section">
+          <div className="section-header">
+            <h3 className="section-title">스터디 모집 게시판</h3>
 
             <button
               onClick={() => {
@@ -231,39 +226,19 @@ function MainPage() {
                 }
                 setCreateOpen(true);
               }}
-              style={{
-                padding: "10px 16px",
-                background: "#1976d2",
-                color: "#fff",
-                border: "none",
-                borderRadius: 8,
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
+              className="btn btn-primary"
             >
               모집글 작성
             </button>
           </div>
 
           {/* 필터 탭 */}
-          <div style={{ display: "flex", gap: 0, marginBottom: 24, borderBottom: "2px solid #e3e7ed", width: 360 }}>
+          <div className="filter-tabs">
             {["전체", "모집중", "모집완료"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setFilter(tab)}
-                style={{
-                  flex: 1,
-                  padding: "10px 0",
-                  background: filter === tab ? "#fff" : "#f4f6fa",
-                  border: "none",
-                  borderBottom: filter === tab ? "2.5px solid #1976d2" : "2.5px solid transparent",
-                  color: filter === tab ? "#1976d2" : "#888",
-                  fontWeight: filter === tab ? "bold" : "normal",
-                  fontSize: 16,
-                  cursor: "pointer",
-                  outline: "none",
-                  transition: "all 0.15s",
-                }}
+                className={`filter-tab ${filter === tab ? "active" : ""}`}
               >
                 {tab}
               </button>
@@ -271,36 +246,13 @@ function MainPage() {
           </div>
 
           {/* 스터디 카드 목록 */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 24, justifyContent: "center", width: "100%" }}>
+          <div className="study-grid">
             {filteredStudies.length === 0 ? (
-              <div style={{
-                gridColumn: "1 / -1",
-                minHeight: 180,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#888",
-                fontSize: 16,
-              }}>
-                아직 모집글이 없습니다
-              </div>
+              <div className="study-empty">아직 모집글이 없습니다</div>
             ) : filteredStudies.map((study) => (
               <div
                 key={study.id}
-                style={{
-                  background: "#f4f6fa",
-                  borderRadius: 10,
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-                  padding: 24,
-                  height: 220,
-                  boxSizing: "border-box",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  cursor: "pointer",
-                  transition: "box-shadow 0.2s",
-                  border: "2px solid #e3e7ed",
-                }}
+                className="study-card"
                 onClick={() => {
                   if (!user) {
                     alert("상세보기 및 가입은 로그인 후 가능합니다.");
@@ -310,47 +262,30 @@ function MainPage() {
                   }
                 }}
               >
-                <div style={{ fontWeight: "bold", fontSize: 18, marginBottom: 8 }}>{study.title}</div>
-                <div style={{ color: "#666", fontSize: 14, marginBottom: 6, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{study.description ?? ""}</div>
-                <div style={{ fontSize: 13, marginBottom: 4 }}><b>리더:</b> {study.leader}</div>
-                <div style={{ fontSize: 13, marginBottom: 4 }}><b>인원:</b> {study.members} / {study.maxMembers}</div>
-                <div style={{ fontSize: 13, marginBottom: 4 }}><b>모집 기간:</b> {study.date}</div>
-                <div style={{ fontSize: 13, color: study.status === "모집중" ? "#2b8a3e" : "#888" }}><b>{study.status}</b></div>
+                <div className="study-title">{study.title}</div>
+                <div className="study-desc">{study.description ?? ""}</div>
+                <div className="study-meta"><b>리더:</b> {study.leader}</div>
+                <div className="study-meta"><b>인원:</b> {study.members} / {study.maxMembers}</div>
+                <div className="study-meta"><b>모집 기간:</b> {study.date}</div>
+                <div className={`study-status ${study.status === "모집중" ? "open" : "closed"}`}><b>{study.status}</b></div>
               </div>
             ))}
           </div>
 
           {/* 상세 모달 */}
           {modalStudy && (
-            <div style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100vw",
-              height: "100vh",
-              background: "rgba(0,0,0,0.3)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              zIndex: 1000
-            }}
-              onClick={() => setModalStudyId(null)}
-            >
+            <div className="modal-overlay" onClick={() => setModalStudyId(null)}>
+              <div className="modal-box" onClick={e => e.stopPropagation()}>
+                <h2 className="modal-title">{modalStudy.title}</h2>
+                <p className="modal-desc">{modalStudy.description}</p>
 
-              <div style={{ background: "#fff", borderRadius: 12, padding: 32, minWidth: 340, boxShadow: "0 2px 12px rgba(0,0,0,0.12)" }} onClick={e => e.stopPropagation()}>
-                <h2 style={{ marginBottom: 12 }}>{modalStudy.title}</h2>
-                <p style={{ color: "#555", marginBottom: 16 }}>{modalStudy.description}</p>
-
-                <div style={{ fontSize: 14, marginBottom: 6 }}><b>리더:</b> {modalStudy.leader}</div>
-                <div style={{ fontSize: 14, marginBottom: 6 }}><b>인원:</b> {modalStudy.members} / {modalStudy.maxMembers}</div>
-                <div style={{ fontSize: 14, marginBottom: 6 }}><b>기간:</b> {modalStudy.date}</div>
-                <div style={{ fontSize: 14, color: modalStudy.status === "모집중" ? "#2b8a3e" : "#888", marginBottom: 16 }}><b>{modalStudy.status}</b></div>
-                <div style={{ display: "flex", gap: 12 }}>
-                  
-                  <button onClick={handleJoinStudy} style={{ padding: "8px 20px", background: "#1976d2", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer" }}>
-                    스터디 가입
-                  </button>
-                  <button onClick={() => setModalStudyId(null)} style={{ padding: "8px 20px", background: "#2b8a3e", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer" }}>닫기</button>
+                <div className="modal-row"><b>리더:</b> {modalStudy.leader}</div>
+                <div className="modal-row"><b>인원:</b> {modalStudy.members} / {modalStudy.maxMembers}</div>
+                <div className="modal-row"><b>기간:</b> {modalStudy.date}</div>
+                <div className="modal-row"><b className={modalStudy.status === "모집중" ? "status-open" : "status-closed"}>{modalStudy.status}</b></div>
+                <div className="modal-actions">
+                  <button onClick={handleJoinStudy} className="btn btn-primary">스터디 가입</button>
+                  <button onClick={() => setModalStudyId(null)} className="btn btn-secondary">닫기</button>
                 </div>
               </div>
             </div>
@@ -358,153 +293,75 @@ function MainPage() {
 
           {/* 글 작성 모달 */}
           {createOpen && (
-            <div
-              style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-                background: "rgba(0,0,0,0.3)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                zIndex: 1000,
-              }}
-              onClick={() => setCreateOpen(false)}
-            >
-              <div
-                style={{
-                  background: "#fff",
-                  borderRadius: 12,
-                  padding: 32,
-                  width: 420,
-                  boxShadow: "0 2px 12px rgba(0,0,0,0.12)",
-                  maxHeight:"80vh",
-                  overflowY:"auto",
-                }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <h2 style={{ marginBottom: 16 }}>모집글 작성</h2>
+            <div className="modal-overlay" onClick={() => setCreateOpen(false)}>
+              <div className="modal-box modal-form" onClick={(e) => e.stopPropagation()}>
+                <h2 className="modal-title">모집글 작성</h2>
 
                 {/* 제목 */}
-                <div style={{ marginBottom: 12 }}>
-                  <div style={{ fontSize: 14, fontWeight: "bold", marginBottom: 6 }}>
-                    스터디 제목
-                  </div>
+                <div className="form-row">
+                  <div className="form-label">스터디 제목</div>
                   <input
                     value={form.title}
                     onChange={(e) => setForm({ ...form, title: e.target.value })}
                     placeholder="예) Spring Boot 스터디"
-                    style={{
-                      width: "100%",
-                      padding: 10,
-                      borderRadius: 8,
-                      border: "1px solid #ddd",
-                      fontSize: 14,
-                    }}
+                    className="form-input"
                   />
                 </div>
 
                 {/* 설명 */}
-                <div style={{ marginBottom: 12 }}>
-                  <div style={{ fontSize: 14, fontWeight: "bold", marginBottom: 6 }}>
-                    스터디 설명
-                  </div>
+                <div className="form-row">
+                  <div className="form-label">스터디 설명</div>
                   <textarea
                     value={form.description}
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
                     placeholder="스터디 소개를 적어주세요!"
                     rows={5}
-                    style={{
-                      width: "100%",
-                      padding: 10,
-                      borderRadius: 8,
-                      border: "1px solid #ddd",
-                      fontSize: 14,
-                      resize: "none",
-                    }}
+                    className="form-textarea"
                   />
                 </div>
 
                 {/* 최대 인원 */}
-                <div style={{ marginBottom: 12 }}>
-                  <div style={{ fontSize: 14, fontWeight: "bold", marginBottom: 6 }}>
-                    최대 인원
-                  </div>
+                <div className="form-row">
+                  <div className="form-label">최대 인원</div>
                   <input
                     type="number"
                     min={1}
                     value={form.maxMembers}
                     onChange={(e) => setForm({ ...form, maxMembers: Number(e.target.value) })}
                     placeholder="예) 8"
-                    style={{
-                      width: "100%",
-                      padding: 10,
-                      borderRadius: 8,
-                      border: "1px solid #ddd",
-                      fontSize: 14,
-                    }}
+                    className="form-input"
                   />
                 </div>
 
                 {/* 모집 시작일 */}
-                <div style={{ marginBottom: 12 }}>
-                  <div style={{ fontSize: 14, fontWeight: "bold", marginBottom: 6 }}>
-                    모집 시작일
-                  </div>
+                <div className="form-row">
+                  <div className="form-label">모집 시작일</div>
                   <input
                     type="date"
                     value={form.recruitmentStartDate}
                     onChange={(e) =>
                       setForm({ ...form, recruitmentStartDate: e.target.value })
                     }
-                    style={{
-                      width: "100%",
-                      padding: 10,
-                      borderRadius: 8,
-                      border: "1px solid #ddd",
-                      fontSize: 14,
-                    }}
+                    className="form-input"
                   />
                 </div>
 
                 {/* 모집 종료일 */}
-                <div style={{ marginBottom: 16 }}>
-                  <div style={{ fontSize: 14, fontWeight: "bold", marginBottom: 6 }}>
-                    모집 종료일
-                  </div>
+                <div className="form-row">
+                  <div className="form-label">모집 종료일</div>
                   <input
                     type="date"
                     value={form.recruitmentEndDate}
                     onChange={(e) =>
                       setForm({ ...form, recruitmentEndDate: e.target.value })
                     }
-                    style={{
-                      width: "100%",
-                      padding: 10,
-                      borderRadius: 8,
-                      border: "1px solid #ddd",
-                      fontSize: 14,
-                    }}
+                    className="form-input"
                   />
                 </div>
 
 
-                <div style={{display: "flex",gap: 12}}>
-                  <button
-                    onClick={handleCreateStudy}
-                    style={{
-                      padding: "8px 20px",
-                      background: "#1976d2",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: 6,
-                      cursor: "pointer",
-                    }}
-                  >
-                    등록
-                  </button>
+                <div className="modal-actions">
+                  <button onClick={handleCreateStudy} className="btn btn-primary">등록</button>
 
                  <button
                     onClick={() => {
@@ -517,14 +374,7 @@ function MainPage() {
                         recruitmentEndDate: "",
                       });
                     }}
-                    style={{
-                      padding: "8px 20px",
-                      background: "#2b8a3e",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: 6,
-                      cursor: "pointer",
-                    }}
+                    className="btn btn-secondary"
                   >
                     닫기
                   </button>
