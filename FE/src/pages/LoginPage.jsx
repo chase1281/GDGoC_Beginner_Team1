@@ -11,6 +11,7 @@ function LoginPage() {
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [showPw, setShowPw] = useState(false); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,26 +71,43 @@ function LoginPage() {
 
         <label className="auth-label">
           비밀번호
-          <input
-            className="auth-input"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="비밀번호 입력"
-            autoComplete="current-password"
-            disabled={loading}
-          />
+          <div className="auth-input-row">
+            <input
+              className="auth-input has-eye"
+              type={showPw ? "text" : "password"}
+              value={password}
+              onChange={(e)=>setPassword(e.target.value)}
+              placeholder="비밀번호 입력"
+              autoComplete="current-password"
+              disabled={loading}
+            ></input>
+
+            <button
+              type = "button"
+              className="auth-eye"
+              onClick={()=> setShowPw((v)=>!v)}
+              disabled={loading}
+              aria-label="비밀번호 보기 토글"
+              title="비밀번호 보기"
+            >
+              {showPw ? "🙈" : "👀"}
+            </button>
+          </div>
         </label>
 
-        {errorMsg && <p className="auth-msg-error">{errorMsg}</p>}
+        {errorMsg && (
+          <div className="auth-msg auth-msg-error">
+            <div>{errorMsg}</div>
+          </div>
+        )}
 
         <div className="auth-actions">
-          <button className="auth-button" type="submit" disabled={loading}>
+          <button className="auth-button primary" type="submit" disabled={loading}>
             {loading ? "로그인 중.." : "로그인"}
           </button>
 
           <button
-            className="auth-button"
+            className="auth-button success"
             type="button"
             onClick={() => navigate("/register")}
             disabled={loading}
@@ -97,7 +115,7 @@ function LoginPage() {
             회원가입
           </button>
           <button
-            className="auth-button"
+            className="auth-button gray"
             type="button"
             onClick={() => navigate("/")}
           >
