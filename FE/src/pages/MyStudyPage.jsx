@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { apiFetch } from "../api";
+import "./MyStudyPage.css";
 
 const mapBoardToStudy = (b) => ({
   id: b.boardId ?? b.id,
@@ -35,42 +36,40 @@ const MyStudyPage = () => {
   }, []);
 
   return (
-    <div className="mystudy-container">
-      <h2>내 스터디</h2>
-      {loading ? (
-        <p>불러오는 중...</p>
-      ) : studies.length === 0 ? (
-        <p>모집 중인 스터디가 없습니다.</p>
-      ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 24, marginTop: 24 }}>
-          {studies.map((study) => (
-            <div
-              key={study.id}
-              style={{
-                background: "#f4f6fa",
-                borderRadius: 10,
-                boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-                padding: 24,
-                height: 220,
-                boxSizing: "border-box",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                border: "2px solid #e3e7ed",
-              }}
-            >
-              <div style={{ fontWeight: "bold", fontSize: 18, marginBottom: 8 }}>{study.title}</div>
-              <div style={{ color: "#666", fontSize: 14, marginBottom: 6, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{study.description ?? ""}</div>
-              <div style={{ fontSize: 13, marginBottom: 4 }}><b>리더:</b> {study.leader}</div>
-              <div style={{ fontSize: 13, marginBottom: 4 }}><b>인원:</b> {study.members} / {study.maxMembers}</div>
-              <div style={{ fontSize: 13, marginBottom: 4 }}><b>모집 기간:</b> {study.date}</div>
-              <div style={{ fontSize: 13, color: study.status === "모집중" ? "#2b8a3e" : "#888" }}><b>{study.status}</b></div>
+      <div className="mystudy-container">
+        <div className="mystudy-card">
+          <div className="mystudy-title-row">
+            <div className="mystudy-title-left">
+              <h2 className="mystudy-title">내 스터디</h2>
+                <div className="mystudy-sub">나의 스터디를 확인세요!
+                </div>
             </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
+          </div>
 
+          {loading ? (
+            <div className="mystudy-state">불러오는 중...</div>
+          ) : studies.length === 0 ? (
+            <div className="mystudy-empty">모집 중인 스터디가 없습니다.</div>
+          ) : (
+            <div className="mystudy-grid">
+              {studies.map((study) => (
+                <div key={study.id} className="mystudy-item">
+                  <div className="mystudy-item-title">{study.title}</div>
+                  <div className="mystudy-item-desc">{study.description ?? ""}</div>
+
+                  <div className="mystudy-meta"><b>리더:</b> {study.leader}</div>
+                  <div className="mystudy-meta"><b>인원:</b> {study.members} / {study.maxMembers}</div>
+                  <div className="mystudy-meta"><b>모집 기간:</b> {study.date}</div>
+
+                  <div className={`mystudy-status ${study.status === "모집중" ? "open" : "closed"}`}>
+                    {study.status === "모집중" ? "🟢 모집중" : "⚪ 모집완료"}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };    
 export default MyStudyPage;
