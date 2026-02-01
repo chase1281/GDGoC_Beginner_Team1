@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { apiFetch } from "../api";
 import "./MainPage.css";
+import gdgocLogo from "./gdgoclogo.png"
 
 function MainPage() {
   const navigate = useNavigate();
@@ -171,7 +172,10 @@ function MainPage() {
   return (
     <div className="main-container">
       <header className="main-header">
-        <div className="brand">GDGoC 스터디 게시판</div>
+        <div className="brand">
+          <img src={gdgocLogo} alt="GDGoc" className="brand-logo" />
+          <span className="brand-title">GDGOC 스터디 게시판</span>
+        </div>
 
         <nav className="main-nav">
           <Link to="/">홈</Link>

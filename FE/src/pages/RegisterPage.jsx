@@ -17,6 +17,10 @@ function RegisterPage() {
   const [successMsg, setSuccessMsg] = useState("");
   const [isRegistered, setIsRegistered] = useState(false);
 
+  const [showPw, setShowPw] = useState(false);
+  const [showPw2, setShowPw2] = useState(false);
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
@@ -103,40 +107,64 @@ function RegisterPage() {
 
           <label className="auth-label">
             비밀번호
-            <input
-              className="auth-input"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="8자 이상"
-              autoComplete="new-password"
-              disabled={loading}
-            />
+            <div className="auth-input-row">
+              <input
+                className="auth-input has-eye"
+                type={showPw ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="8자 이상"
+                autoComplete="new-password"
+                disabled={loading}
+              />
+              <button
+                type="button"
+                className="auth-eye"
+                onClick={() => setShowPw((v) => !v)}
+                disabled={loading}
+                aria-label="비밀번호 보기 토글"
+                title="비밀번호 보기"
+              >
+                {showPw ? "🙈" : "👀"}
+              </button>
+            </div>
           </label>
 
           <label className="auth-label">
             비밀번호 확인
-            <input
-              className="auth-input"
-              type="password"
-              value={password2}
-              onChange={(e) => setPassword2(e.target.value)}
-              placeholder="비밀번호 확인"
-              autoComplete="new-password"
-              disabled={loading}
-            />
+            <div className="auth-input-row">
+              <input
+                className="auth-input has-eye"
+                type={showPw2 ? "text" : "password"}
+                value={password2}
+                onChange={(e) => setPassword2(e.target.value)}
+                placeholder="비밀번호 확인"
+                autoComplete="new-password"
+                disabled={loading}
+              />
+              <button
+                type="button"
+                className="auth-eye"
+                onClick={() => setShowPw2((v) => !v)}
+                disabled={loading}
+                aria-label="비밀번호 확인 보기 토글"
+                title="비밀번호 확인 보기"
+              >
+                {showPw2 ? "🙈" : "👀"}
+              </button>
+            </div>
           </label>
 
-          {errorMsg && <p className="auth-msg-error">{errorMsg}</p>}
-          {successMsg && <p className="auth-msg-success">{successMsg}</p>}
+          {errorMsg && <p className="auth-msg auth-msg-error">{errorMsg}</p>}
+          {successMsg && <p className="auth-msg auth-msg-success">{successMsg}</p>}
 
           <div className="auth-actions">
-            <button className="auth-button" type="submit" disabled={loading}>
+            <button className="auth-button success" type="submit" disabled={loading}>
               {loading ? "가입중.." : "회원가입"}
             </button>
 
             <button
-              className="auth-button"
+              className="auth-button gray"
               type="button"
               onClick={() => navigate("/")}
               disabled={loading}
@@ -147,13 +175,13 @@ function RegisterPage() {
         </form>
       ) : (
         <div className="auth-actions">
-          <p className="auth-msg-success">{successMsg || "회원가입이 성공했습니다."}</p>
+          <p className="auth-msg auth-msg-success">{successMsg || "회원가입이 성공했습니다."}</p>
 
-          <button className="auth-button" type="button" onClick={() => navigate("/login")}>
+          <button className="auth-button primary" type="button" onClick={() => navigate("/login")}>
             로그인하러가기
           </button>
 
-          <button className="auth-button" type="button" onClick={() => navigate("/")}>
+          <button className="auth-button gray" type="button" onClick={() => navigate("/")}>
             홈으로 돌아가기
           </button>
         </div>
