@@ -87,14 +87,31 @@ function MainPage() {
   const modalStudy = studies.find(s => s.id === modalStudyId);
 
   // 스터디 가입 버튼 클릭 핸들러
-  const handleJoinStudy = () => {
+  const handleJoinStudy = async () => {
     if (!user) {
       navigate("/login");
       return;
     }
 
-    // 실제 가입 로직은 추후 구현
-    alert("스터디 가입 기능은 아직 구현되지 않았습니다.");
+    if (!modalStudyId) {
+      alert("잘못된 접근입니다.");
+      return;
+    }
+
+    try {
+      await apiFetch(`/applications/boards/${modalStudyId}`, {
+        method: "POST",
+      });
+      alert("스터디 가입 신청이 완료되었습니다!");
+      setModalStudyId(null);
+      // TODO: 필요시 내 스터디 목록/상태 갱신
+    } catch (e) {
+      if (e?.message?.includes("-401") || e?.message?.includes("본인의 게시글")) {
+        alert("본인 글에는 가입할 수 없습니다.");
+      } else {
+        alert(e?.message || "스터디 가입 실패");
+      }
+    }
   };
 
   //글 작성 등록 버튼 클릭 핸들러 
