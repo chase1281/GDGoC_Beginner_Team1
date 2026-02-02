@@ -16,6 +16,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -223,8 +228,11 @@ class BoardServiceTest {
         );
         boardRepository.saveAll(List.of(board1, board2));
 
+        Pageable pageable = PageRequest.of(0, 10);
+
         // when
-        List<BoardResponse> responses = boardService.getRecruitingBoards();
+        Page<BoardResponse> page = boardService.getRecruitingBoards(pageable);
+        List<BoardResponse> responses = page.getContent();
 
         // then
         assertThat(responses).hasSizeGreaterThanOrEqualTo(2);
@@ -233,6 +241,69 @@ class BoardServiceTest {
                 .contains("test title 1", "test title 2");
         assertThat(responses)
                 .allMatch(r -> r.getStatus() == BoardStatus.RECRUITING);
+    }
+
+    @Test
+    @DisplayName("모집완료 게시글 목록 조회")
+    void getClosedBoards() {
+        // given
+        Board board1 = Board.create(
+                testMember, "test title 1", 5, "content 1",
+                FIXED_START, FIXED_END
+        );
+        Board board2 = Board.create(
+                testMember, "test title 2", 3, "content 2",
+                FIXED_START, FIXED_END
+        );
+
+        ReflectionTestUtils.setField(board1, "status", BoardStatus.CLOSED);
+        ReflectionTestUtils.setField(board2, "status", BoardStatus.CLOSED);
+
+        boardRepository.saveAll(List.of(board1, board2));
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // when
+        Page<BoardResponse> page = boardService.getClosedBoards(pageable);
+        List<BoardResponse> responses = page.getContent();
+
+        // then
+        assertThat(responses).hasSizeGreaterThanOrEqualTo(2);
+        assertThat(responses)
+                .extracting(BoardResponse::getTitle)
+                .contains("test title 1", "test title 2");
+        assertThat(responses)
+                .allMatch(r -> r.getStatus() == BoardStatus.CLOSED);
+    }
+
+    @Test
+    @DisplayName("전체 게시글 목록 조회")
+    void getAllBoards() {
+        // given
+        Board board1 = Board.create(
+                testMember, "test title 1", 5, "content 1",
+                FIXED_START, FIXED_END
+        );
+        Board board2 = Board.create(
+                testMember, "test title 2", 3, "content 2",
+                FIXED_START, FIXED_END
+        );
+
+        ReflectionTestUtils.setField(board1, "status", BoardStatus.CLOSED);
+
+        boardRepository.saveAll(List.of(board1, board2));
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // when
+        Page<BoardResponse> page = boardService.getAllBoards(pageable);
+        List<BoardResponse> responses = page.getContent();
+
+        // then
+        assertThat(responses).hasSizeGreaterThanOrEqualTo(2);
+        assertThat(responses)
+                .extracting(BoardResponse::getTitle)
+                .contains("test title 1", "test title 2");
     }
 
     @Test
@@ -258,5 +329,39 @@ class BoardServiceTest {
         assertThat(response.getCapacity()).isEqualTo(5);
         assertThat(response.getWriterName()).isEqualTo(testMember.getName());
         assertThat(response.getStatus()).isEqualTo(BoardStatus.RECRUITING);
+    }
+
+    //pageable 테스트
+    @Test
+    @DisplayName("pageable 테스트")
+    void pageable_success(){
+
+        boardRepository.deleteAll();
+
+        for(int i=1; i<=15; i++) {
+            Board board = Board.create(
+                    testMember,
+                    "test" + i,
+                    5,
+                    "test content",
+                    FIXED_START,
+                    FIXED_END
+            );
+            boardRepository.save(board);
+        }
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("boardId").descending());
+
+            Page<BoardResponse> result = boardService.getRecruitingBoards(pageable);
+
+            assertThat(result.getContent()).hasSize(10);
+            assertThat(result.getTotalElements()).isEqualTo(15);
+            assertThat(result.getTotalPages()).isEqualTo(2);
+            assertThat(result.isFirst()).isTrue();
+            assertThat(result.hasNext()).isTrue();
+
+            assertThat(result.getContent().get(0).getBoardId())
+                    .isGreaterThan(result.getContent().get(1).getBoardId());
+
     }
 }

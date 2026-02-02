@@ -11,11 +11,12 @@ import com.example.StudyBoard.exception.ErrorCode;
 import com.example.StudyBoard.member.entity.Member;
 import com.example.StudyBoard.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime; // Import 추가됨
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +45,13 @@ public class BoardService {
         return BoardResponse.from(savedBoard);
     }
 
+
+    private Board findBoard(Long boardId) {
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.BOARD_NOT_FOUND));
+    }
+
+
     //단건 조회
     @Transactional(readOnly = true)
     public BoardResponse get(Long boardId) {
@@ -52,16 +60,23 @@ public class BoardService {
 
     // 모집중인 게시글 목록 조회
     @Transactional(readOnly = true)
-    public List<BoardResponse> getRecruitingBoards() {
-        return boardRepository.findAllByStatus(BoardStatus.RECRUITING)
-                .stream()
-                .map(BoardResponse::from)
-                .toList();
+    public Page<BoardResponse> getRecruitingBoards(Pageable pageable) {
+        return boardRepository.findAllByStatus(BoardStatus.RECRUITING, pageable)
+                .map(BoardResponse::from);
     }
 
-    private Board findBoard(Long boardId) {
-        return boardRepository.findById(boardId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.BOARD_NOT_FOUND));
+    //모집완료 게시글 목록 조회
+    @Transactional(readOnly = true)
+    public Page<BoardResponse> getClosedBoards(Pageable pageable){
+        return boardRepository.findAllByStatus(BoardStatus.CLOSED, pageable)
+                .map(BoardResponse::from);
+    }
+
+    //전체 게시글 목록 조회
+    @Transactional(readOnly = true)
+    public Page<BoardResponse> getAllBoards(Pageable pageable){
+        return boardRepository.findAll(pageable)
+                .map(BoardResponse::from);
     }
 
     //게시글 삭제
