@@ -6,12 +6,15 @@ import com.example.StudyBoard.board.dto.response.BoardResponse;
 import com.example.StudyBoard.board.service.BoardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/boards")
@@ -37,10 +40,28 @@ public class BoardController {
         return ResponseEntity.ok(boardService.get(boardId));
     }
 
-    //목록 조회
+    //모집중인 목록 조회
     @GetMapping("/recruiting")
-    public ResponseEntity<List<BoardResponse>> getRecruitingBoards() {
-        return ResponseEntity.ok(boardService.getRecruitingBoards());
+    public ResponseEntity<Page<BoardResponse>> getRecruitingBoards(
+            @PageableDefault(size=10, sort = "boardId", direction = Sort.Direction.DESC)
+            Pageable pageable) {
+        return ResponseEntity.ok(boardService.getRecruitingBoards(pageable));
+    }
+
+    //모집 완료 목록 조회
+    @GetMapping("/closed")
+    public ResponseEntity<Page<BoardResponse>> getClosedBoards(
+            @PageableDefault(size=10, sort = "boardId", direction = Sort.Direction.DESC)
+            Pageable pageable) {
+        return ResponseEntity.ok(boardService.getClosedBoards(pageable));
+    }
+
+    //전체 목록 조회
+    @GetMapping("/all")
+    public ResponseEntity<Page<BoardResponse>> getAllBoards(
+            @PageableDefault(size=10, sort = "boardId", direction = Sort.Direction.DESC)
+            Pageable pageable) {
+        return ResponseEntity.ok(boardService.getAllBoards(pageable));
     }
 
     //삭제
