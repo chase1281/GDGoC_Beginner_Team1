@@ -352,16 +352,16 @@ class BoardServiceTest {
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("boardId").descending());
 
-            Page<BoardResponse> result = boardService.getRecruitingBoards(pageable);
+        Page<BoardResponse> result = boardService.getRecruitingBoards(pageable);
 
-            assertThat(result.getContent()).hasSize(10);
-            assertThat(result.getTotalElements()).isEqualTo(15);
-            assertThat(result.getTotalPages()).isEqualTo(2);
-            assertThat(result.isFirst()).isTrue();
-            assertThat(result.hasNext()).isTrue();
+        assertThat(result.getContent()).hasSize(10);
+        assertThat(result.getTotalElements()).isEqualTo(15);
+        assertThat(result.getTotalPages()).isEqualTo(2);
+        assertThat(result.isFirst()).isTrue();
+        assertThat(result.hasNext()).isTrue();
 
-            assertThat(result.getContent().get(0).getBoardId())
-                    .isGreaterThan(result.getContent().get(1).getBoardId());
+        assertThat(result.getContent().get(0).getBoardId())
+                .isGreaterThan(result.getContent().get(1).getBoardId());
 
     }
 }

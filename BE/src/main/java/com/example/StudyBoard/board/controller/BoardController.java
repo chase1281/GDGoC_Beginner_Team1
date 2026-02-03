@@ -64,6 +64,17 @@ public class BoardController {
         return ResponseEntity.ok(boardService.getAllBoards(pageable));
     }
 
+    //내가 만든 스터디 목록 조회
+    @GetMapping("/my")
+    public ResponseEntity<Page<BoardResponse>> getMyBoards(
+            Authentication authentication,
+            @PageableDefault(size = 10, sort = "boardId", direction = Sort.Direction.DESC)
+            Pageable pageable
+    ){
+        Long memberId = (Long) authentication.getPrincipal();
+        return ResponseEntity.ok(boardService.getMyBoards(memberId, pageable));
+    }
+
     //삭제
     @DeleteMapping("/{boardId}")
     public ResponseEntity<String> delete(@PathVariable Long boardId, Authentication authentication) {
