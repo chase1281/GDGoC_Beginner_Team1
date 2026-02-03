@@ -80,6 +80,7 @@ public class BoardService {
     }
 
     //내가 만든 스터디 목록 조회
+    @Transactional(readOnly = true)
     public Page<BoardResponse> getMyBoards(Long memberId, Pageable pageable){
         return boardRepository.findAllByMember_MemberId(memberId, pageable)
                 .map(BoardResponse::from);

@@ -33,7 +33,7 @@ public class ApplicationControllerTest {
     ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("내가 만든 스터디 목록 조회 성공")
+    @DisplayName("내가 신청한 스터디 목록 조회 성공")
     public void successGetMyAppliedBoards() throws Exception{
         //given
         MemberRegisterRequest registerRequest = new MemberRegisterRequest(
