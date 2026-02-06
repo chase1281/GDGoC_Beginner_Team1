@@ -79,6 +79,13 @@ public class BoardService {
                 .map(BoardResponse::from);
     }
 
+    //내가 만든 스터디 목록 조회
+    @Transactional(readOnly = true)
+    public Page<BoardResponse> getMyBoards(Long memberId, Pageable pageable){
+        return boardRepository.findAllByMember_MemberId(memberId, pageable)
+                .map(BoardResponse::from);
+    }
+
     //게시글 삭제
     public void delete(Long boardId, Long memberId) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(ErrorCode.BOARD_NOT_FOUND));

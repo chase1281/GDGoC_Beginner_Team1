@@ -2,6 +2,7 @@ package com.example.StudyBoard.application.service;
 
 import com.example.StudyBoard.application.entity.Application;
 import com.example.StudyBoard.application.repository.ApplicationRepository;
+import com.example.StudyBoard.board.dto.response.BoardResponse;
 import com.example.StudyBoard.board.entity.Board;
 import com.example.StudyBoard.board.repository.BoardRepository;
 import com.example.StudyBoard.constant.ApplicationStatus;
@@ -10,6 +11,8 @@ import com.example.StudyBoard.exception.ErrorCode;
 import com.example.StudyBoard.member.entity.Member;
 import com.example.StudyBoard.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,5 +116,12 @@ public class ApplicationService {
 
         application.reject();
         board.release();
+    }
+
+    //신청 게시글 조회
+    public Page<BoardResponse> getMyAppliedBoards(Long memberId, Pageable pageable){
+        return applicationRepository
+                .findAllByMember_MemberId(memberId, pageable)
+                .map(application -> BoardResponse.from(application.getBoard()));
     }
 }
