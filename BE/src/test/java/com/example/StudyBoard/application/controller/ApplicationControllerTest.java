@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -61,7 +62,7 @@ public class ApplicationControllerTest {
 
         String accessToken = objectMapper.readTree(loginResponse).get("accessToken").asText();
 
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("신청 대상 스터디", "내용", 5, LocalDateTime.now(), LocalDateTime.now().plusDays(3));
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("신청 대상 스터디", "내용", 5, LocalDateTime.now(), LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4), LocalDateTime.now().plusDays(30));
         String boardResponse = mockMvc.perform(post("/boards/create")
                             .header("Authorization", "Bearer " + accessToken)
                             .contentType(MediaType.APPLICATION_JSON)

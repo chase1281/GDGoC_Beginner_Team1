@@ -18,6 +18,8 @@ public class BoardResponse {
     private BoardStatus status;
     private LocalDateTime recruitmentStartDate;
     private LocalDateTime recruitmentEndDate;
+    private LocalDateTime studyStartDate;
+    private LocalDateTime studyEndDate;
 
     //작성자 정보
     private Long memberId;
@@ -34,6 +36,8 @@ public class BoardResponse {
                 .status(board.getStatus())
                 .recruitmentStartDate(board.getRecruitmentStartDate())
                 .recruitmentEndDate(board.getRecruitmentEndDate())
+                .studyStartDate(board.getStudyStartDate())
+                .studyEndDate(board.getStudyEndDate())
 
                 .memberId(board.getMember().getMemberId())
                 .writerName(board.getMember().getName())

@@ -38,7 +38,9 @@ public class BoardService {
                 request.getCapacity(),
                 request.getContent(),
                 request.getRecruitmentStartDate(),
-                request.getRecruitmentEndDate()
+                request.getRecruitmentEndDate(),
+                request.getStudyStartDate(),
+                request.getStudyEndDate()
         );
 
         Board savedBoard = boardRepository.save(board);
@@ -111,7 +113,9 @@ public class BoardService {
                 request.getContent(),
                 request.getCapacity(),
                 request.getRecruitmentStartDate(),
-                request.getRecruitmentEndDate()
+                request.getRecruitmentEndDate(),
+                request.getStudyStartDate(),
+                request.getStudyEndDate()
         );
 
         return BoardResponse.from(board);
