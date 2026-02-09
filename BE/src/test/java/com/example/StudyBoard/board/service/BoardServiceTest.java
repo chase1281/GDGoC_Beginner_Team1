@@ -109,6 +109,39 @@ class BoardServiceTest {
     }
 
     @Test
+    @DisplayName("게시글 생성 실패 - 스터디 시작일이 종료일 이후")
+    void createBoard_fail_invalidStudyPeriod() {
+        BoardCreateRequest request = new BoardCreateRequest(
+                "test",
+                "content",
+                5,
+                FIXED_START,
+                FIXED_END,
+                FIXED_END.plusDays(5),
+                FIXED_END.plusDays(1)
+        );
+
+        assertThatThrownBy(() -> boardService.create(request, testMember.getMemberId())).isInstanceOf(BusinessException.class).hasFieldOrPropertyWithValue("errorCode",ErrorCode.INVALID_STUDY_PERIOD);
+    }
+
+    @Test
+    @DisplayName("게시글 생성 실패 - 모집 종료일이 스터디 시작일 이후")
+    void createBoard_fail_invalidPeriodSequence() {
+        BoardCreateRequest request = new BoardCreateRequest(
+                "test",
+                "content",
+                5,
+                FIXED_START,
+                FIXED_END.plusDays(10),
+                FIXED_END.plusDays(5),
+                FIXED_END.plusDays(30)
+        );
+
+        assertThatThrownBy(() -> boardService.create(request, testMember.getMemberId())).isInstanceOf(BusinessException.class).hasFieldOrPropertyWithValue("errorCode",ErrorCode.INVALID_PERIOD_SEQUENCE);
+    }
+
+
+    @Test
     @DisplayName("게시글 수정 테스트")
     void editBoard_success() {
         // given
@@ -202,6 +235,64 @@ class BoardServiceTest {
         )
                 .isInstanceOf(BusinessException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.FORBIDDEN_ACCESS);
+    }
+
+    @Test
+    @DisplayName("게시글 수정 실패 - 스터디 시작일이 종료일 이후")
+    void editBoard_fail_invalidStudyPeriod(){
+        Board board = Board.create(
+                testMember,
+                "title",
+                5,
+                "content",
+                FIXED_START,
+                FIXED_END,
+                FIXED_END.plusDays(1),
+                FIXED_END.plusDays(30)
+        );
+
+        boardRepository.save(board);
+
+        BoardEditRequest request = createEditRequest(
+                "title",
+                "content",
+                5,
+                FIXED_START,
+                FIXED_END,
+                FIXED_END.plusDays(5),
+                FIXED_END.plusDays(1)
+        );
+
+        assertThatThrownBy(() -> boardService.edit(board.getBoardId(), testMember.getMemberId(), request)).isInstanceOf(BusinessException.class).hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_STUDY_PERIOD);
+    }
+
+    @Test
+    @DisplayName("게시글 수정 실패 - 모집 종료일이 스터디 시작일 이후")
+    void editBoard_fail_invalidPeriodSequence(){
+        Board board = Board.create(
+                testMember,
+                "title",
+                5,
+                "content",
+                FIXED_START,
+                FIXED_END,
+                FIXED_END.plusDays(1),
+                FIXED_END.plusDays(30)
+        );
+
+        boardRepository.save(board);
+
+        BoardEditRequest request = createEditRequest(
+                "title",
+                "content",
+                5,
+                FIXED_START,
+                FIXED_END.plusDays(10),
+                FIXED_END.plusDays(5),
+                FIXED_END.plusDays(30)
+        );
+
+        assertThatThrownBy(() -> boardService.edit(board.getBoardId(), testMember.getMemberId(), request)).isInstanceOf(BusinessException.class).hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_PERIOD_SEQUENCE);
     }
 
     @Test
