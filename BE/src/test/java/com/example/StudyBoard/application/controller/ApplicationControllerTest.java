@@ -61,7 +61,7 @@ public class ApplicationControllerTest {
 
         String accessToken = objectMapper.readTree(loginResponse).get("accessToken").asText();
 
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("신청 대상 스터디", "내용", 5, LocalDateTime.now(), LocalDateTime.now().plusDays(3));
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("신청 대상 스터디", "내용", 5, LocalDateTime.now(), LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4), LocalDateTime.now().plusDays(30));
         String boardResponse = mockMvc.perform(post("/boards/create")
                             .header("Authorization", "Bearer " + accessToken)
                             .contentType(MediaType.APPLICATION_JSON)

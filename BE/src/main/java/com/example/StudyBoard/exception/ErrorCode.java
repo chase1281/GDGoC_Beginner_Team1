@@ -26,6 +26,8 @@ public enum ErrorCode {
     RECRUITMENT_CLOSED(HttpStatus.BAD_REQUEST, "-301", "모집이 마감된 게시글입니다."),
     RECRUITMENT_PERIOD_INVALID(HttpStatus.BAD_REQUEST, "-302","모집 기간이 아닙니다."),
     INVALID_RECRUITMENT_PERIOD(HttpStatus.BAD_REQUEST, "-303", "모집 시작일은 종료일보다 이전이어야 합니다."),
+    INVALID_STUDY_PERIOD(HttpStatus.BAD_REQUEST, "-304", "스터디 시작일은 종료일보다 이전이어야 합니다."),
+    INVALID_PERIOD_SEQUENCE(HttpStatus.BAD_REQUEST, "-305", "스터디 시작일은 모집 종료일 이후여야 합니다."),
     //신청
     DUPLICATED_APPLIED(HttpStatus.BAD_REQUEST, "-400", "이미 신청한 게시글입니다."),
     SELF_APPLICATION(HttpStatus.BAD_REQUEST, "-401", "본인의 게시글에는 신청할 수 없습니다."),

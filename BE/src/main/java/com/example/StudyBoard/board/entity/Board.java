@@ -56,8 +56,16 @@ public class Board extends BaseEntity {
     @Column(nullable = false)
     private int currentCount;
 
+
+    //스터디 기간
+    @Column(name = "study_start_date",nullable = false)
+    private LocalDateTime studyStartDate;
+
+    @Column(name = "study_end_date", nullable = false)
+    private LocalDateTime studyEndDate;
+
 //모집 게시글 생성자
-    public Board(Member member, String title, int capacity, String content, LocalDateTime recruitmentStartDate, LocalDateTime recruitmentEndDate) {
+    public Board(Member member, String title, int capacity, String content, LocalDateTime recruitmentStartDate, LocalDateTime recruitmentEndDate, LocalDateTime studyStartDate, LocalDateTime studyEndDate) {
         this.member = member;
         this.title = title;
         this.content = content;
@@ -66,6 +74,8 @@ public class Board extends BaseEntity {
         this.status = BoardStatus.RECRUITING;
         this.recruitmentStartDate = recruitmentStartDate;
         this.recruitmentEndDate = recruitmentEndDate;
+        this.studyStartDate = studyStartDate;
+        this.studyEndDate = studyEndDate;
     }
 
 //신청인원 처리
@@ -99,8 +109,10 @@ public class Board extends BaseEntity {
             String title,
             int capacity,
             String content,
-            LocalDateTime start,
-            LocalDateTime end
+            LocalDateTime recruitStart,
+            LocalDateTime recruitEnd,
+            LocalDateTime studyStart,
+            LocalDateTime studyEnd
 
     ) {
 
@@ -112,10 +124,18 @@ public class Board extends BaseEntity {
             throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
         }
 
-        if (!start.isBefore(end)) {
+        if (!recruitStart.isBefore(recruitEnd)) {
             throw new BusinessException(ErrorCode.INVALID_RECRUITMENT_PERIOD);
         }
-        return new Board(member, title, capacity, content, start, end);
+
+        if(!studyStart.isBefore(studyEnd)) {
+            throw new BusinessException(ErrorCode.INVALID_STUDY_PERIOD);
+        }
+
+        if(recruitEnd.isAfter(studyStart)) {
+            throw new BusinessException(ErrorCode.INVALID_PERIOD_SEQUENCE);
+        }
+        return new Board(member, title, capacity, content, recruitStart, recruitEnd, studyStart, studyEnd);
     }
 
     public void release(){
@@ -129,13 +149,21 @@ public class Board extends BaseEntity {
     }
 
     //게시글 수정
-    public void update(String title, String content, int capacity, LocalDateTime start, LocalDateTime end) {
+    public void update(String title, String content, int capacity, LocalDateTime recruitStart, LocalDateTime recruitEnd, LocalDateTime studyStart, LocalDateTime studyEnd) {
         if(capacity <= 0) {
             throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
         }
 
-        if(!start.isBefore(end)) {
+        if(!recruitStart.isBefore(recruitEnd)) {
             throw new BusinessException(ErrorCode.INVALID_RECRUITMENT_PERIOD);
+        }
+
+        if(!studyStart.isBefore(studyEnd)) {
+            throw new BusinessException(ErrorCode.INVALID_STUDY_PERIOD);
+        }
+
+        if(recruitEnd.isAfter(studyStart)) {
+            throw new BusinessException(ErrorCode.INVALID_PERIOD_SEQUENCE);
         }
 
         if(this.currentCount > capacity) {
@@ -145,8 +173,10 @@ public class Board extends BaseEntity {
         this.title = title;
         this.content = content;
         this.capacity = capacity;
-        this.recruitmentStartDate = start;
-        this.recruitmentEndDate = end;
+        this.recruitmentStartDate = recruitStart;
+        this.recruitmentEndDate = recruitEnd;
+        this.studyStartDate = studyStart;
+        this.studyEndDate = studyEnd;
 
         //CLOSE->OPEN
         if (this.status == BoardStatus.CLOSED && this.currentCount < capacity) {

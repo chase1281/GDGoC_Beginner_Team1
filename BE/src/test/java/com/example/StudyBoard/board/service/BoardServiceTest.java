@@ -25,6 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -48,7 +49,7 @@ class BoardServiceTest {
     private Member testMember;
 
     //고정시간
-    private final LocalDateTime FIXED_START = LocalDateTime.of(2026, 1, 1, 10, 0);
+    private final LocalDateTime FIXED_START = LocalDateTime.of(2026, 3, 1, 10, 0);
     private final LocalDateTime FIXED_END = FIXED_START.plusDays(7);
 
     @BeforeEach
@@ -63,22 +64,26 @@ class BoardServiceTest {
     }
     //board 생성
     private BoardCreateRequest createBoardRequest(String title, String content, int capacity) {
-        return new BoardCreateRequest(title, content, capacity, FIXED_START, FIXED_END);
+        return new BoardCreateRequest(title, content, capacity, FIXED_START, FIXED_END, FIXED_END.plusDays(1),FIXED_END.plusDays(30));
     }
 
     private BoardEditRequest createEditRequest(
             String title,
             String content,
             int capacity,
-            LocalDateTime start,
-            LocalDateTime end
+            LocalDateTime recruitStart,
+            LocalDateTime recruitEnd,
+            LocalDateTime studyStart,
+            LocalDateTime studyEnd
     ) {
         BoardEditRequest request = new BoardEditRequest();
         ReflectionTestUtils.setField(request, "title", title);
         ReflectionTestUtils.setField(request, "content", content);
         ReflectionTestUtils.setField(request, "capacity", capacity);
-        ReflectionTestUtils.setField(request, "recruitmentStartDate", start);
-        ReflectionTestUtils.setField(request, "recruitmentEndDate", end);
+        ReflectionTestUtils.setField(request, "recruitmentStartDate", recruitStart);
+        ReflectionTestUtils.setField(request, "recruitmentEndDate", recruitEnd);
+        ReflectionTestUtils.setField(request, "studyStartDate", studyStart);
+        ReflectionTestUtils.setField(request, "studyEndDate", studyEnd);
         return request;
     }
 
@@ -104,6 +109,39 @@ class BoardServiceTest {
     }
 
     @Test
+    @DisplayName("게시글 생성 실패 - 스터디 시작일이 종료일 이후")
+    void createBoard_fail_invalidStudyPeriod() {
+        BoardCreateRequest request = new BoardCreateRequest(
+                "test",
+                "content",
+                5,
+                FIXED_START,
+                FIXED_END,
+                FIXED_END.plusDays(5),
+                FIXED_END.plusDays(1)
+        );
+
+        assertThatThrownBy(() -> boardService.create(request, testMember.getMemberId())).isInstanceOf(BusinessException.class).hasFieldOrPropertyWithValue("errorCode",ErrorCode.INVALID_STUDY_PERIOD);
+    }
+
+    @Test
+    @DisplayName("게시글 생성 실패 - 모집 종료일이 스터디 시작일 이후")
+    void createBoard_fail_invalidPeriodSequence() {
+        BoardCreateRequest request = new BoardCreateRequest(
+                "test",
+                "content",
+                5,
+                FIXED_START,
+                FIXED_END.plusDays(10),
+                FIXED_END.plusDays(5),
+                FIXED_END.plusDays(30)
+        );
+
+        assertThatThrownBy(() -> boardService.create(request, testMember.getMemberId())).isInstanceOf(BusinessException.class).hasFieldOrPropertyWithValue("errorCode",ErrorCode.INVALID_PERIOD_SEQUENCE);
+    }
+
+
+    @Test
     @DisplayName("게시글 수정 테스트")
     void editBoard_success() {
         // given
@@ -113,7 +151,9 @@ class BoardServiceTest {
                 5,
                 "test content",
                 FIXED_START,
-                FIXED_END
+                FIXED_END,
+                FIXED_END.plusDays(1),
+                FIXED_END.plusDays(30)
         );
         boardRepository.save(board);
 
@@ -122,7 +162,7 @@ class BoardServiceTest {
         LocalDateTime newEnd = FIXED_END.plusDays(5);
 
         BoardEditRequest editRequest =
-                createEditRequest("edit board", "edit content", 10, newStart, newEnd);
+                createEditRequest("edit board", "edit content", 10, newStart, newEnd,newEnd.plusDays(1),newEnd.plusDays(30));
 
         // when
         BoardResponse response =
@@ -145,14 +185,16 @@ class BoardServiceTest {
                 5,
                 "test content",
                 FIXED_START,
-                FIXED_END
+                FIXED_END,
+                FIXED_END.plusDays(1),
+                FIXED_END.plusDays(30)
         );
         boardRepository.save(board);
 
         ReflectionTestUtils.setField(board, "currentCount", 4);
         boardRepository.save(board);
 
-        BoardEditRequest editRequest = createEditRequest("test board", "test content", 3, FIXED_START, FIXED_END);
+        BoardEditRequest editRequest = createEditRequest("test board", "test content", 3, FIXED_START, FIXED_END,FIXED_END.plusDays(1),FIXED_END.plusDays(30));
 
         //when&then
         assertThatThrownBy(() -> boardService.edit(board.getBoardId(), testMember.getMemberId(), editRequest))
@@ -170,7 +212,9 @@ class BoardServiceTest {
                 5,
                 "test2 edit content",
                 FIXED_START,
-                FIXED_END
+                FIXED_END,
+                FIXED_END.plusDays(1),
+                FIXED_END.plusDays(30)
         );
         boardRepository.save(board);
         //test2 member 생성
@@ -183,7 +227,7 @@ class BoardServiceTest {
 
         BoardEditRequest editRequest =
                 createEditRequest("edit title", "edit content", 5,
-                        FIXED_START, FIXED_END);
+                        FIXED_START, FIXED_END,FIXED_END.plusDays(1),FIXED_END.plusDays(30));
 
         // when & then
         assertThatThrownBy(() ->
@@ -191,6 +235,64 @@ class BoardServiceTest {
         )
                 .isInstanceOf(BusinessException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.FORBIDDEN_ACCESS);
+    }
+
+    @Test
+    @DisplayName("게시글 수정 실패 - 스터디 시작일이 종료일 이후")
+    void editBoard_fail_invalidStudyPeriod(){
+        Board board = Board.create(
+                testMember,
+                "title",
+                5,
+                "content",
+                FIXED_START,
+                FIXED_END,
+                FIXED_END.plusDays(1),
+                FIXED_END.plusDays(30)
+        );
+
+        boardRepository.save(board);
+
+        BoardEditRequest request = createEditRequest(
+                "title",
+                "content",
+                5,
+                FIXED_START,
+                FIXED_END,
+                FIXED_END.plusDays(5),
+                FIXED_END.plusDays(1)
+        );
+
+        assertThatThrownBy(() -> boardService.edit(board.getBoardId(), testMember.getMemberId(), request)).isInstanceOf(BusinessException.class).hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_STUDY_PERIOD);
+    }
+
+    @Test
+    @DisplayName("게시글 수정 실패 - 모집 종료일이 스터디 시작일 이후")
+    void editBoard_fail_invalidPeriodSequence(){
+        Board board = Board.create(
+                testMember,
+                "title",
+                5,
+                "content",
+                FIXED_START,
+                FIXED_END,
+                FIXED_END.plusDays(1),
+                FIXED_END.plusDays(30)
+        );
+
+        boardRepository.save(board);
+
+        BoardEditRequest request = createEditRequest(
+                "title",
+                "content",
+                5,
+                FIXED_START,
+                FIXED_END.plusDays(10),
+                FIXED_END.plusDays(5),
+                FIXED_END.plusDays(30)
+        );
+
+        assertThatThrownBy(() -> boardService.edit(board.getBoardId(), testMember.getMemberId(), request)).isInstanceOf(BusinessException.class).hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_PERIOD_SEQUENCE);
     }
 
     @Test
@@ -203,7 +305,9 @@ class BoardServiceTest {
                 5,
                 "delete test content",
                 FIXED_START,
-                FIXED_END
+                FIXED_END,
+                FIXED_END.plusDays(1),
+                FIXED_END.plusDays(30)
         );
         boardRepository.save(board);
 
@@ -220,11 +324,11 @@ class BoardServiceTest {
         // given
         Board board1 = Board.create(
                 testMember, "test title 1", 5, "content 1",
-                FIXED_START, FIXED_END
+                FIXED_START, FIXED_END, FIXED_END.plusDays(1),FIXED_END.plusDays(30)
         );
         Board board2 = Board.create(
                 testMember, "test title 2", 3, "content 2",
-                FIXED_START, FIXED_END
+                FIXED_START, FIXED_END, FIXED_END.plusDays(1),FIXED_END.plusDays(30)
         );
         boardRepository.saveAll(List.of(board1, board2));
 
@@ -249,11 +353,11 @@ class BoardServiceTest {
         // given
         Board board1 = Board.create(
                 testMember, "test title 1", 5, "content 1",
-                FIXED_START, FIXED_END
+                FIXED_START, FIXED_END, FIXED_END.plusDays(1),FIXED_END.plusDays(30)
         );
         Board board2 = Board.create(
                 testMember, "test title 2", 3, "content 2",
-                FIXED_START, FIXED_END
+                FIXED_START, FIXED_END, FIXED_END.plusDays(1),FIXED_END.plusDays(30)
         );
 
         ReflectionTestUtils.setField(board1, "status", BoardStatus.CLOSED);
@@ -282,11 +386,11 @@ class BoardServiceTest {
         // given
         Board board1 = Board.create(
                 testMember, "test title 1", 5, "content 1",
-                FIXED_START, FIXED_END
+                FIXED_START, FIXED_END, FIXED_END.plusDays(1),FIXED_END.plusDays(30)
         );
         Board board2 = Board.create(
                 testMember, "test title 2", 3, "content 2",
-                FIXED_START, FIXED_END
+                FIXED_START, FIXED_END, FIXED_END.plusDays(1),FIXED_END.plusDays(30)
         );
 
         ReflectionTestUtils.setField(board1, "status", BoardStatus.CLOSED);
@@ -316,7 +420,9 @@ class BoardServiceTest {
                 5,
                 "test content 1",
                 FIXED_START,
-                FIXED_END
+                FIXED_END,
+                FIXED_END.plusDays(1),
+                FIXED_END.plusDays(30)
         );
         boardRepository.save(board);
 
@@ -345,7 +451,9 @@ class BoardServiceTest {
                     5,
                     "test content",
                     FIXED_START,
-                    FIXED_END
+                    FIXED_END,
+                    FIXED_END.plusDays(1),
+                    FIXED_END.plusDays(30)
             );
             boardRepository.save(board);
         }

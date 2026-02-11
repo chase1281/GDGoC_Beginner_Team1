@@ -30,4 +30,10 @@ public class BoardCreateRequest {
     @Future(message = "모집 종료일은 현재 시점 이후여야 합니다")
     private LocalDateTime recruitmentEndDate;
 
+    @NotNull(message = "스터디 시작일을 입력해주세요")
+    private LocalDateTime studyStartDate;
+
+    @NotNull(message = "스터디 종료일을 입력해주세요")
+    @Future(message = "스터디 종료일은 현재 시점 이후여야 합니다")
+    private LocalDateTime studyEndDate;
 }

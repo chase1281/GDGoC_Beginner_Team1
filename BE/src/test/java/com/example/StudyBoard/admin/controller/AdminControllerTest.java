@@ -74,7 +74,10 @@ public class AdminControllerTest {
                         5,
                         "내용",
                         LocalDateTime.now().minusDays(1),
-                        LocalDateTime.now().plusDays(1)
+                        LocalDateTime.now().plusDays(1),
+                        //스터디 시작,종료
+                        LocalDateTime.now().plusDays(2),
+                        LocalDateTime.now().plusDays(30)
                 )
         );
         //when
@@ -100,7 +103,10 @@ public class AdminControllerTest {
                         5,
                         "내용",
                         LocalDateTime.now().minusDays(1),
-                        LocalDateTime.now().plusDays(1)
+                        LocalDateTime.now().plusDays(1),
+                        //스터디 시작,종료
+                        LocalDateTime.now().plusDays(2),
+                        LocalDateTime.now().plusDays(30)
                 )
         );
         //when

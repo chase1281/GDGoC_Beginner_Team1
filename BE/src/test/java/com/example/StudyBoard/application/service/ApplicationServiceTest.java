@@ -64,7 +64,7 @@ public class ApplicationServiceTest {
         writer = createMember("writer@test.com", "writer");
         applicant = createMember("applicant@test.com", "applicant");
 
-        testBoard = Board.create(writer, "test board",2,"content",FIXED_START,FIXED_END);
+        testBoard = Board.create(writer, "test board",2,"content",FIXED_START,FIXED_END,FIXED_END.plusDays(1),FIXED_END.plusDays(30));
         boardRepository.save(testBoard);
     }
 
