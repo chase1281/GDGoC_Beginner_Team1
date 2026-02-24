@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.data.domain.Pageable;
-import java.time.LocalDateTime; // Import 추가됨
 
 @Service
 @RequiredArgsConstructor
@@ -37,10 +36,10 @@ public class BoardService {
                 request.getTitle(),
                 request.getCapacity(),
                 request.getContent(),
-                request.getRecruitmentStartDate(),
-                request.getRecruitmentEndDate(),
-                request.getStudyStartDate(),
-                request.getStudyEndDate()
+                request.getRecruitmentStartDate().atStartOfDay(),
+                request.getRecruitmentEndDate().atTime(23, 59, 59),
+                request.getStudyStartDate().atStartOfDay(),
+                request.getStudyEndDate().atTime(23, 59, 59)
         );
 
         Board savedBoard = boardRepository.save(board);
@@ -112,10 +111,10 @@ public class BoardService {
                 request.getTitle(),
                 request.getContent(),
                 request.getCapacity(),
-                request.getRecruitmentStartDate(),
-                request.getRecruitmentEndDate(),
-                request.getStudyStartDate(),
-                request.getStudyEndDate()
+                request.getRecruitmentStartDate().atStartOfDay(),
+                request.getRecruitmentEndDate().atTime(23, 59, 59),
+                request.getStudyStartDate().atStartOfDay(),
+                request.getStudyEndDate().atTime(23, 59, 59)
         );
 
         return BoardResponse.from(board);
