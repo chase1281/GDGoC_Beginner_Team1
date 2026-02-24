@@ -8,9 +8,9 @@
 
 ---
 
-## 배포 주소 | Distribution Address
+## 나의 기여 | My Contribution
 
-- [바로 가기](https://)
+
 
 ---
 
