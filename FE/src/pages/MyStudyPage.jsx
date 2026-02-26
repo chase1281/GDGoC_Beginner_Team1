@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../api";
 import "./MyStudyPage.css";
 
@@ -28,13 +29,20 @@ const extractBoardList = (data) => {
 };
 
 const MyStudyPage = () => {
+  const navigate = useNavigate();
   const [studies, setStudies] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBoards = async () => {
+            const savedUser = localStorage.getItem("user");
+      if (!savedUser) {
+        navigate("/login");
+        return;
+      }
+
       try {
-        const data = await apiFetch("/boards/recruiting", { skipAuth: true });
+        const data = await apiFetch("/boards/my");
         const mapped = extractBoardList(data).map(mapBoardToStudy);
         setStudies(mapped);
       } catch (e) {
@@ -44,7 +52,7 @@ const MyStudyPage = () => {
       }
     };
     fetchBoards();
-  }, []);
+  }, [navigate]);
 
   return (
       <div className="mystudy-container">

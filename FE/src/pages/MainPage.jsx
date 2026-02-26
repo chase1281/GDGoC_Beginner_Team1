@@ -45,7 +45,7 @@ function MainPage() {
   useEffect(() => {
     const fetchBoards = async () => {
       try {
-        const data = await apiFetch("/boards/recruiting", { skipAuth: true });
+        const data = await apiFetch("/boards/all", { skipAuth: true });
         const mapped = extractBoardList(data).map(mapBoardToStudy);
         // 서버에서 받아온 결과를 반영합니다. 빈 배열이면 화면을 비워둡니다.
         setStudies(mapped);
@@ -184,7 +184,7 @@ function MainPage() {
 
       // 서버에서 최신 목록을 받아오면 화면을 갱신합니다. 서버가 빈 배열이면 로컬 상태를 유지합니다.
       try {
-        const latest = await apiFetch("/boards/recruiting", { skipAuth: true });
+        const latest = await apiFetch("/boards/all", { skipAuth: true });
         const mappedLatest = extractBoardList(latest).map(mapBoardToStudy);
         // 서버가 빈 배열을 반환하더라도 방금 추가한 로컬 항목은 유지합니다.
         setStudies((prev) => (mappedLatest.length > 0 ? mappedLatest : prev));
