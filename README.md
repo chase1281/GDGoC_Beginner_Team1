@@ -10,7 +10,15 @@
 
 ## 나의 기여 | My Contribution
 
+JWT
 
+Security
+
+권한 설계
+
+상태 전이 설계
+
+예외 체계 설계
 
 ---
 
