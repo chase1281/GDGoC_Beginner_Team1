@@ -9,8 +9,17 @@
 ---
 
 ## 나의 기여 | My Contribution
+프로젝트 주제 선정
 
-JWT
+전체 기능 정의 및 요구사항 구체화
+
+ERD 설계 및 제약 조건 설계
+
+RESTful API 구조 설계
+
+JWT 기반 인증/인가 구조 설계
+
+USER / ADMIN 권한 분리 설계
 
 Security
 
