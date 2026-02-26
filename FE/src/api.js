@@ -32,11 +32,23 @@ export async function apiFetch(path, options = {}) {
     let msg = "요청 실패";
 
     if (data) {
-      if (typeof data === "string") msg = data;
-      else if (data.message) msg = data.message;
-      else if (data.error) msg = data.error;
-      else if (data.errorCode) msg = data.errorCode;
-      else msg = JSON.stringify(data);
+      if (typeof data === "string") {
+        msg = data;
+      } else {
+        const errors = Array.isArray(data.errors) ? data.errors.filter(Boolean) : [];
+        const detail = data.details || data.detailMessages;
+
+        msg =
+          data.errorMessage ||
+          data.errorDescription ||
+          data.message ||
+          data.error ||
+          (errors.length > 0 ? errors.join("\n") : null) ||
+          detail ||
+          data.errorCode ||
+          data.errorCodeResponse ||
+          JSON.stringify(data);
+      }
     }
 
     throw new Error(msg);

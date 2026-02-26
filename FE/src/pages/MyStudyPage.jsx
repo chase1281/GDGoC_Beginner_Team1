@@ -35,15 +35,34 @@ const MyStudyPage = () => {
 
   useEffect(() => {
     const fetchBoards = async () => {
-            const savedUser = localStorage.getItem("user");
+      const savedUser = localStorage.getItem("user");
       if (!savedUser) {
         navigate("/login");
         return;
       }
 
-      try {
-        const data = await apiFetch("/boards/my");
-        const mapped = extractBoardList(data).map(mapBoardToStudy);
+      try { 
+        const [myBoardsResult, appliedBoardsResult] = await Promise.allSettled([
+          apiFetch("/boards/my"),
+          apiFetch("/applications/my"),
+        ]);
+
+        const myBoards =
+          myBoardsResult.status === "fulfilled"
+            ? extractBoardList(myBoardsResult.value)
+            : [];
+
+        const appliedBoards =
+          appliedBoardsResult.status === "fulfilled"
+            ? extractBoardList(appliedBoardsResult.value)
+            : [];
+
+        const merged = [...myBoards, ...appliedBoards];
+        const uniqueBoards = Array.from(
+          new Map(merged.map((board) => [board.boardId ?? board.id, board])).values()
+        );
+
+        const mapped = uniqueBoards.map(mapBoardToStudy);
         setStudies(mapped);
       } catch (e) {
         setStudies([]);
