@@ -8,11 +8,6 @@
 
 ---
 
-## 배포 주소 | Distribution Address
-
-- [바로 가기](https://)
-
----
 
 ## 프로젝트 소개 | Introducion to the Project
 
